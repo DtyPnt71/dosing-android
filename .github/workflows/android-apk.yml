@@ -3,6 +3,9 @@ name: HDT Dosier-Tool Android
 # Manual builds avoid generating artifacts on every source change.
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/android-apk.yml']
 
 permissions:
   contents: read
