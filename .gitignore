@@ -1,0 +1,8 @@
+node_modules
+dist
+*.local
+.DS_Store
+
+# Generated Capacitor Android project and temporary launcher assets
+android/
+assets/

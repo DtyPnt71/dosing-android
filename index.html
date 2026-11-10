@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+    <meta name="theme-color" content="#f1f5f8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="icon" href="./icons/favicon-v1.ico" sizes="16x16 32x32 48x48 64x64" />
+    <link rel="icon" href="./icons/favicon-v1.png" type="image/png" sizes="48x48" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-v1.png" sizes="180x180" />
+    <title>HDT GmbH Dosier-Tool</title>
+  </head>
+  <body>
+    <div id="root"><div style="min-height:100vh;display:grid;place-content:center;text-align:center;background:#f1f5f8;color:#111827;font:16px system-ui;padding:24px"><h1>HDT Dosier-Tool</h1><p>App wird geladen …</p><p id="startup-help" hidden>Das Laden dauert länger. Bitte Verbindung prüfen.<br><button onclick="location.reload()" style="padding:14px;margin-top:16px">Erneut laden</button></p></div></div>
+    <script>setTimeout(function(){var help=document.getElementById('startup-help');if(help)help.hidden=false},10000)</script>
+    <script src="./html2pdf.bundle.js"></script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

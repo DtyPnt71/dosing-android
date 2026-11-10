@@ -1,0 +1,142 @@
+name: HDT Dosier-Tool Android
+
+# Manual builds avoid generating artifacts on every source change.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out sources
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools'
+
+      - name: Install app dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Build web application
+        run: npm run build
+
+      - name: Create native wrapper and synchronize plugins
+        run: |
+          npx cap add android
+          npx cap sync android
+
+      - name: Prepare Android application version
+        run: |
+          python3 - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+          release = json.loads(Path('mobile-release.json').read_text())
+          file = Path('android/app/build.gradle')
+          original = file.read_text()
+          updated, code_count = re.subn(r'(?m)^(\s*versionCode\s+)\d+', lambda m: m.group(1) + str(release['androidVersionCode']), original, count=1)
+          updated, name_count = re.subn(r'''(?m)^(\s*versionName\s+)(["'])(.*?)\2''', lambda m: m.group(1) + m.group(2) + release['androidVersionName'] + m.group(2), updated, count=1)
+          if code_count != 1 or name_count != 1:
+              raise SystemExit('Cannot find Android versionCode/versionName in generated Gradle file')
+          file.write_text(updated)
+          print('Android release version configured:', release['androidVersionCode'], release['androidVersionName'])
+          PY
+
+      - name: Generate Android launcher icon
+        run: |
+          mkdir -p assets
+          node --input-type=module <<'NODE'
+          import sharp from 'sharp'
+          await sharp('public/icon-512x512.png')
+            .resize(1024, 1024, { fit: 'contain' })
+            .png()
+            .toFile('assets/icon.png')
+          NODE
+          npx capacitor-assets generate --android --iconBackgroundColor '#f1f5f8' --splashBackgroundColor '#f1f5f8'
+
+      - name: Build test APK
+        run: |
+          chmod +x android/gradlew
+          cd android
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Upload test APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: HDT-Dosier-Tool-Android-Debug-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 2
+
+      - name: Build signed release AAB and APK when signing secrets are configured
+        id: release
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ] || [ -z "$ANDROID_KEYSTORE_PASSWORD" ] || [ -z "$ANDROID_KEY_ALIAS" ] || [ -z "$ANDROID_KEY_PASSWORD" ]; then
+            echo "Release signing secrets are not yet configured. Skipping release signing."
+            exit 0
+          fi
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/hdt-upload-key.p12
+          chmod 600 android/app/hdt-upload-key.p12
+          cat >> android/app/build.gradle <<'GRADLE'
+          
+          // Release signing uses GitHub Actions secrets, never committed passwords or keys.
+          android {
+              signingConfigs {
+                  hdtUpload {
+                      storeFile file('hdt-upload-key.p12')
+                      storePassword System.getenv('ANDROID_KEYSTORE_PASSWORD')
+                      keyAlias System.getenv('ANDROID_KEY_ALIAS')
+                      keyPassword System.getenv('ANDROID_KEY_PASSWORD')
+                  }
+              }
+              buildTypes {
+                  release {
+                      signingConfig signingConfigs.hdtUpload
+                  }
+              }
+          }
+          GRADLE
+          cd android
+          ./gradlew bundleRelease assembleRelease --no-daemon
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+
+      - name: Upload signed Play Store app bundle
+        if: steps.release.outputs.ready == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: HDT-Dosier-Tool-Signed-Release-AAB
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+          retention-days: 2
+
+      - name: Upload signed release APK
+        if: steps.release.outputs.ready == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: HDT-Dosier-Tool-Signed-Release-APK
+          path: android/app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
+          retention-days: 2

@@ -1,0 +1,170 @@
+{
+  "_comment1": "Erklärung der Felder:",
+  "_comment2": "id = interne Kennung (maschinenlesbar, z.B. klein, ohne Leerzeichen)",
+  "_comment3": "name = Anzeigename im Dropdown",
+  "_comment4": "targetPercentB = Ziel-B-Anteil in %, wenn Hersteller einen Fixwert vorgibt",
+  "_comment5": "minPercentB / maxPercentB = zulässiger Bereich in %, wenn eine Range vorgegeben ist",
+  "_comment6": "Wenn targetPercentB gesetzt ist, wird dieser Wert in der Toleranzanzeige verwendet.",
+  "PU": [
+    {
+      "id": "tremco-js-442",
+      "name": "Tremco JS 442 MF",
+      "minPercentB": 7.0,
+      "maxPercentB": 7.0,
+      "targetPercentB": 7.0
+    },
+    {
+      "id": "kommerling-gd667",
+      "name": "Kömmerling GD667",
+      "minPercentB": 7.5,
+      "maxPercentB": 7.5,
+      "targetPercentB": 7.5
+    },
+    {
+      "id": "kommerling-koerapur-672",
+      "name": "Kömmerling Körapur 672 (Unbekannt)",
+      "minPercentB": 5.1,
+      "maxPercentB": 5.1,
+      "targetPercentB": 5.1
+    },
+    {
+      "id": "emcepren-200-classic",
+      "name": "Emcepren 200 Classic",
+      "minPercentB": 6.5,
+      "maxPercentB": 6.8
+    },
+    {
+      "id": "emcepren-200-neo",
+      "name": "Emcepren 200 Neo",
+      "minPercentB": 6.2,
+      "maxPercentB": 6.5
+    },
+    {
+      "id": "igk-130-flussig",
+      "name": "IGK 130 flüssig",
+      "minPercentB": 6.1,
+      "maxPercentB": 7.5
+    },
+    {
+      "id": "igk-130-pastos",
+      "name": "IGK 130 pastös",
+      "minPercentB": 6.4,
+      "maxPercentB": 7.8
+    },
+    {
+      "id": "fenzi-poliver-f",
+      "name": "Fenzi Poliver F",
+      "minPercentB": 6.0,
+      "maxPercentB": 8.1
+    },
+    {
+      "id": "fenzi-poliver-ac",
+      "name": "Fenzi Poliver AC",
+      "minPercentB": 5.1,
+      "maxPercentB": 7.2
+    }
+  ],
+  "PS": [
+    {
+      "id": "fenzi-thiover",
+      "name": "Fenzi Thiover",
+      "minPercentB": 9.5,
+      "maxPercentB": 9.5,
+      "targetPercentB": 9.5
+    },
+    {
+      "id": "igk-311",
+      "name": "IGK 311",
+      "minPercentB": 7.06,
+      "maxPercentB": 9.55,
+      "targetPercentB": 8.3
+    },
+    {
+      "id": "kommerling-gd116",
+      "name": "Kömmerling GD116",
+      "minPercentB": 9.5,
+      "maxPercentB": 11
+    },
+    {
+      "id": "kommerling-gd116lv",
+      "name": "Kömmerling GD116LV",
+      "minPercentB": 9.5,
+      "maxPercentB": 11,
+      "targetPercentB": 10.9
+    },
+    {
+      "id": "kommerling-gd116na",
+      "name": "Kömmerling GD116NA",
+      "minPercentB": 9.5,
+      "maxPercentB": 11,
+      "targetPercentB": 10.9
+    },
+    {
+      "id": "nedex-ps-018",
+      "name": "Nedex PS-018",
+      "minPercentB": 8.6,
+      "maxPercentB": 8.6,
+      "targetPercentB": 8.6
+    }
+  ],
+  "SI": [
+    {
+      "id": "otto-chemie-coll-s645",
+      "name": "Otto Chemie Coll S645",
+      "minPercentB": 7.1,
+      "maxPercentB": 8.6
+    },
+    {
+      "id": "dow-dc-993",
+      "name": "Dow DC 993",
+      "minPercentB": 9.0,
+      "maxPercentB": 11.0
+    },
+    {
+      "id": "dow-dc-983",
+      "name": "Dowsil 983",
+      "minPercentB": 10.5,
+      "maxPercentB": 13.0
+    },
+    {
+      "id": "dow-dc-3362",
+      "name": "Dow DC 3362",
+      "minPercentB": 9.0,
+      "maxPercentB": 11.0
+    },
+    {
+      "id": "dow-dc-3363",
+      "name": "Dow DC 3363",
+      "minPercentB": 9.2,
+      "maxPercentB": 10.8
+    },
+    {
+      "id": "kommerling-gd-920",
+      "name": "Kömmerling GD 920",
+      "minPercentB": 9.0,
+      "maxPercentB": 11.0,
+      "targetPercentB": 10.0
+    },
+    {
+      "id": "ramsauer-670",
+      "name": "Ramsauer 670",
+      "minPercentB": 12.0,
+      "maxPercentB": 12.0,
+      "targetPercentB": 12.0
+    },
+    {
+      "id": "sikasil-sg500",
+      "name": "Sikasil SG500",
+      "minPercentB": 13.0,
+      "maxPercentB": 13.0,
+      "targetPercentB": 13.0
+    },
+    {
+      "id": "sikasil-ig25-hm",
+      "name": "Sikasil IG25-HM",
+      "minPercentB": 13.0,
+      "maxPercentB": 13.0,
+      "targetPercentB": 13.0
+    }
+  ]
+}
