@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Calculator, ChevronRight, CircleHelp, Download, FileDown, Info, Languages, Menu, Plus, RefreshCw, RotateCcw, Scale, Settings2, Trash2, Weight, Wrench } from 'lucide-react'
+import { ChevronRight, Download, FileDown, RefreshCw, RotateCcw, Scale, Settings2, Trash2, Weight, Wrench } from 'lucide-react'
 import baseMaterialsJson from './materials.json'
 import creatorsJson from './creator-names.json'
 import { Button } from './components/ui/button'
 import { Dialog, DialogContent } from './components/ui/dialog'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './components/ui/dropdown-menu'
+import { AppMenu } from './components/AppMenu'
 import { MaterialPicker } from './components/MaterialPicker'
 import { MaterialManager } from './components/MaterialManager'
 import { ExportDialog } from './components/ExportDialog'
@@ -63,6 +63,7 @@ function App() {
   const [language, setLanguage] = useState<Language>(() => storedLanguage() ?? 'de')
   const [chooseLanguageOpen, setChooseLanguageOpen] = useState(() => storedLanguage() === null)
   const [tourStep, setTourStep] = useState<number | null>(() => storedLanguage() && !introductionFinished() ? 0 : null)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [family, setFamily] = useState<Family>('PS')
   const [materialId, setMaterialId] = useState('')
   const [weightA, setWeightA] = useState('')
@@ -82,6 +83,8 @@ function App() {
   const [toast, setToast] = useState('')
   const t = translator(language)
   const locale = language === 'de' ? 'de-DE' : 'en-US'
+  const menuTourActive = tourStep === ONBOARDING_STEPS - 1 && !chooseLanguageOpen
+  const menuOpen = userMenuOpen || menuTourActive
 
   const baseMaterials = baseMaterialsJson as MaterialMap
   const allMaterials = useMemo<MaterialMap>(() => ({
@@ -222,6 +225,7 @@ function App() {
       else if (localStorage.getItem(WEIGHT_NOTICE_KEY) !== 'done') setWeightNoticeOpen(true)
     } catch { /* still finish the current tour */ }
     setTourStep(null)
+    setUserMenuOpen(false)
   }
 
   const selectMaterial = (material: Material) => {
@@ -261,6 +265,7 @@ function App() {
       <GuidedTour
         language={language}
         stepIndex={chooseLanguageOpen ? null : tourStep}
+        menuVisible={menuOpen}
         onBack={() => setTourStep((current) => current == null ? null : Math.max(0, current - 1))}
         onNext={() => {
           if (tourStep === null) return
@@ -284,23 +289,23 @@ function App() {
         </div>
         <div className="header-actions">
           <Button variant="secondary" size="icon" onClick={() => window.location.reload()} aria-label={language === 'de' ? 'Website neu laden' : 'Reload website'} title={language === 'de' ? 'Website neu laden' : 'Reload website'}><RotateCcw className="size-5" /></Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild><Button variant="secondary" size="icon" aria-label={t('menu')}><Menu className="size-5" /></Button></DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>{t('menu')}</DropdownMenuLabel>
-              <DropdownMenuItem disabled={!samples.length} onSelect={() => setExportOpen(true)}><FileDown className="size-4 text-cyan-700" />{t('export')}</DropdownMenuItem>
-              <DropdownMenuItem onSelect={toggleLanguage}><Languages className="size-4" />{t('language')}</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={() => setManagerMode('add')}><Plus className="size-4" />{t('addMaterial')}</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setManagerMode('manage')}><Settings2 className="size-4" />{t('manageMaterials')}</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={() => setInfoOpen('calculation')}><Calculator className="size-4" />{language === 'de' ? 'Berechnung & Gewicht' : 'Calculation & weight'}</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => void checkForUpdate(false)}><RefreshCw className="size-4" />{language === 'de' ? 'Nach Updates suchen' : 'Check for updates'}</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setInfoOpen('help')}><CircleHelp className="size-4" />{t('help')}</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setInfoOpen('about')}><Info className="size-4" />{t('about')}</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setInfoOpen('privacy')}><Info className="size-4" />{language === 'de' ? 'Datenschutzerklärung' : 'Privacy policy'}</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <AppMenu
+            language={language}
+            open={menuOpen}
+            onOpenChange={(next) => { if (!menuTourActive) setUserMenuOpen(next) }}
+            tourActive={menuTourActive}
+            hasSamples={samples.length > 0}
+            onExport={() => setExportOpen(true)}
+            onAddMaterial={() => setManagerMode('add')}
+            onManageMaterials={() => setManagerMode('manage')}
+            onChangeLanguage={toggleLanguage}
+            onTutorial={() => { setUserMenuOpen(false); setTourStep(0) }}
+            onCalculation={() => setInfoOpen('calculation')}
+            onCheckUpdates={() => void checkForUpdate(false)}
+            onHelp={() => setInfoOpen('help')}
+            onAbout={() => setInfoOpen('about')}
+            onPrivacy={() => setInfoOpen('privacy')}
+          />
         </div>
       </header>
 
