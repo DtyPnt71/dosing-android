@@ -19,9 +19,9 @@ Siehe [ANDROID-APK.md](ANDROID-APK.md) für die Testversion und [MOBILE-RELEASE.
 - **Eigener App-Code, selbst entwickelte Funktionen, eigene UI und eigene Projektdateien:** Copyright © 2026 **Timo Burian**. Alle Rechte vorbehalten, soweit keine Rechte Dritter bestehen. Das Projekt wird **proprietär** entwickelt.
 - **HDT-Logo und HDT-Markenkennzeichen:** Eigentum der **HDT Hochdruck-Dosier-Technik GmbH (HDT GmbH)**. Nutzung durch Timo Burian mit Genehmigung der HDT GmbH; keine Lizenz für die Wiederverwendung durch Dritte.
 - **Eingesetzte Bibliotheken/Frameworks:** Bleiben Eigentum ihrer jeweiligen Rechteinhaber und unterliegen den jeweiligen Drittanbieter-Lizenzen. Es wird kein Eigentum daran beansprucht.
-- **Google Play:** Die endgültige Paket-ID `de.hdt.dosiertool` und die erforderlichen Store-Unterlagen vor Veröffentlichung prüfen.
+- **Google Play:** Die endgültige Paket-ID `de.hdt.dosing` und die erforderlichen Store-Unterlagen vor Veröffentlichung prüfen.
 
-Siehe [LICENSE](LICENSE) für den proprietären Rechtevorbehalt und [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) für Drittanbieterhinweise. Das Repository ist privat. Eine Offenlegung des selbst entwickelten App-Quellcodes ist nicht geplant.
+Siehe [LICENSE](LICENSE) für den proprietären Rechtevorbehalt und [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) für Drittanbieterhinweise. Das Repository ist derzeit privat. Vor einer möglichen Veröffentlichung auf GitHub sind die vollständige Offenlegung des Quellcodes, frühere Git-Versionen, interne Projektdaten und proprietäre Firmenkennzeichen bewusst zu prüfen.
 
 ## Datenschutz & Werbe-ID
 
@@ -29,7 +29,7 @@ Siehe [LICENSE](LICENSE) für den proprietären Rechtevorbehalt und [THIRD-PARTY
 - **Privacy-Hardening für Android:** Der Android-Build entfernt die Berechtigungen `AD_ID` und `INTERNET`, deaktiviert Cloud-/Gerätetransfer-Backups und prüft das zusammengeführte Manifest in CI. Der neue Build und PDF-/Mail-Teilen müssen anschließend auf Android getestet werden.
 - **Datenschutzerklärung (Entwurf):** [`public/datenschutz.html`](public/datenschutz.html) – in der Android-App lokal über **Datenschutz** erreichbar; Kontakt- und Hostingangaben vor Veröffentlichung noch ergänzen.
 - **Play-Console-Datensicherheit:** [PLAY-DATA-SAFETY.md](PLAY-DATA-SAFETY.md). Die finale Erklärung wird auf den tatsächlich geprüften Release-Build abgestimmt.
-- **Öffentliche Datenschutz-URL:** Erst nach Vervollständigung separat, weltweit per HTTPS bereitstellen, beispielsweise über GitHub Pages. Die App-Quellen bleiben privat.
+- **Öffentliche Datenschutz-URL:** Vorgesehen ist [GitHub Pages dieses Repositories](https://dtypnt71.github.io/dosing-android/) mit der Datei `docs/index.html`. Die Seite ist erst verfügbar, wenn GitHub Pages aktiviert und eine passende Repository-Sichtbarkeit vorhanden ist. Bei einem öffentlichen Repository ist auch der gesamte Quellcode sichtbar; eine private Quelle mit öffentlicher Pages-Seite setzt einen geeigneten GitHub-Plan voraus.
 
 ## Google Play und Exportkontrolle
 
