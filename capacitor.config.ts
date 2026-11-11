@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
-  appId: 'de.hdt.dosiertool',
+  appId: 'de.hdt.dosing',
   appName: 'HDT Dosier-Tool',
   webDir: 'dist',
   // All app assets are bundled into the APK, so measurements work offline.
