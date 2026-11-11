@@ -1,7 +1,7 @@
 # US-/EU-Exportkontrolle – HDT Dosier-Tool Android
 
 **Prüfstand:** 11. November 2026  
-**App:** HDT Dosier-Tool Android · App-ID `de.hdt.dosiertool` · Ausgangsversion 3.3.1  
+**App:** HDT Dosier-Tool Android · aktuelle App-ID `de.hdt.dosing` · Ausgangsversion 3.3.1  
 **Verantwortlicher Entwickler:** Timo Burian  
 **Status:** Eigener App-Code und vorhandene **Debug-APK vom 10.11.2026** technisch geprüft. **Signiertes Release-AAB, rechtliche US-/EU-Einstufung, konkrete Länderprüfung und abschließende Freigabe stehen noch aus.**  
 **WICHTIG:** Dieses Dokument ist eine Prüfliste, **keine behördliche Exportgenehmigung, ECCN-Klassifizierung oder rechtsverbindliche Konformitätserklärung.**
@@ -39,7 +39,7 @@ Amtliche Quellen:
 
 ## 1a. Prüfung der vorhandenen APK – tatsächlicher Binärbefund
 
-Die vorhandene Debug-APK aus [GitHub Actions #42816984400](https://github.com/DtyPnt71/dosing-android/actions/runs/42816984400) wurde am **11.11.2026** direkt untersucht:
+Die **historische Debug-APK mit der alten Paketkennung `de.hdt.dosiertool`** aus [GitHub Actions #42816984400](https://github.com/DtyPnt71/dosing-android/actions/runs/42816984400) wurde am **11.11.2026** direkt untersucht:
 
 - SHA-256: `8eecca48ea1a721570463df42c4a7700a5e73bb83dd7d81c5096cc63b954c4f7` (8 188 726 Bytes).
 - Android-Zielversion: **API 36**; Android-Minimum: **API 24**.
