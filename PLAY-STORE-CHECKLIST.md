@@ -1,6 +1,6 @@
 # Google Play – Startklar-Checkliste (Stand: 11.11.2026)
 
-**Projekt:** HDT Dosier-Tool · Paketkennung `de.hdt.dosiertool` · Copyright an eigenem Programmcode: Timo Burian.  
+**Projekt:** HDT Dosier-Tool · Paketkennung `de.hdt.dosing` · Copyright an eigenem Programmcode: Timo Burian.  
 **Wichtig:** Das HDT-Logo und die HDT-Markenkennzeichen gehören der HDT GmbH; Nutzung mit Genehmigung.  
 **Status:** Vorbereitungsphase. **Noch kein exportrechtlich freigegebenes und signiertes Release-AAB.**
 
@@ -79,9 +79,11 @@ Google-Anleitung: [Signieren von Apps](https://developer.android.com/studio/publ
 - [x] Offline lesbarer, trackersfreier **Entwurf** der App-Datenschutzerklärung unter `public/datenschutz.html` und Zugriff über App-Menü/Footer eingebaut.
 - [x] Neue APK #42970018468 ohne `INTERNET`-/`AD_ID`-Berechtigung und mit deaktiviertem Android-Backup erfolgreich gebaut und im CI geprüft.
 - [ ] **Echtes Android-Gerät testen:** App-Start, lokales Versions-Asset, PDF-Erstellung und Teilen per E-Mail ohne Internetberechtigung.
-- [ ] Datenschutzkontakt-E-Mail, ladungsfähige Anschrift und korrekte Verantwortlichkeit (Timo Burian oder ggf. HDT GmbH) ergänzen.
-- [ ] Öffentliche Datenschutzerklärung als HTML unter weltweit zugänglicher HTTPS-URL ohne Login hosten; Hostingprotokolle und Speicherfristen korrekt beschreiben.
-- [ ] `mobile-release.json` – `privacyPolicyUrl` auf tatsächlich erreichbare Adresse und `privacyPolicyStatus` erst nach Prüfung auf `approved` setzen; CI blockiert signierte Release-Builds bis dahin.
+- [x] Datenschutzkontakt und Anschrift in der Erklärung eingetragen: **Timo Burian, c/o HDT GmbH, Müllerstraße 7, 46242 Bottrop; timo.burian@h-d-tec.de**. Die tatsächlich datenschutzrechtliche Verantwortlichkeit vor Store-Einreichung bestätigen.
+- [x] HTML-Seite für GitHub Pages im selben Repository unter `docs/index.html` vorbereitet; GitHub Pages als Host in der Erklärung benannt.
+- [ ] GitHub Pages unter Settings → Pages → `main`/`docs` aktivieren und öffentliche URL ohne Login weltweit testen (auf GitHub Free nur bei öffentlichem Repository, was den gesamten Quellcode offenlegt).
+- [x] Geplante URL `https://dtypnt71.github.io/dosing-android/` und Paket-ID `de.hdt.dosing` in `mobile-release.json` hinterlegt.
+- [ ] `privacyPolicyStatus` erst nach öffentlichem Abruf, Abgleich beider HTML-Dateien und Rechtsprüfung auf `approved` setzen; CI blockiert signierte Release-Builds bis dahin.
 - [ ] Datenschutzerklärung mit öffentlich erreichbarer URL in Play Console hinterlegen.
 - [ ] Datenverarbeitung/Play-Console-Datensicherheit, lokale Speicherung, Android-App-Backup und freiwilliger PDF-/Mail-Versand korrekt erklären.
 - [ ] Zielgruppe, App-Zugriff, Werbung, Altersfreigabe, Datenkategorien, Länder und Inhaltsangaben wahrheitsgemäß festlegen.
