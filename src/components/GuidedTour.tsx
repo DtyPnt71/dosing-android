@@ -117,7 +117,7 @@ export function GuidedTour({ language, stepIndex, onBack, onNext, onSkip }: Tour
     }
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    element.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'center', inline: 'nearest' })
+    element.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center', inline: 'nearest' })
     updatePosition()
     window.addEventListener('scroll', updatePosition, true)
     window.addEventListener('resize', updatePosition)
@@ -154,7 +154,8 @@ export function GuidedTour({ language, stepIndex, onBack, onNext, onSkip }: Tour
 
   if (!step) return null
 
-  const last = stepIndex === steps.length - 1
+  const activeIndex = stepIndex ?? 0
+  const last = activeIndex === steps.length - 1
   return (
     <div className="intro-tour-layer" role="dialog" aria-modal="true" aria-label={de ? 'Einführung in das Dosier-Tool' : 'Dosing tool introduction'}>
       {highlight
@@ -163,10 +164,10 @@ export function GuidedTour({ language, stepIndex, onBack, onNext, onSkip }: Tour
       <div ref={panel} className="intro-tour-panel" tabIndex={-1} aria-live="polite">
         <div className="intro-tour-topline">
           <span>{de ? 'Kurze Einführung' : 'Quick introduction'}</span>
-          <span>{stepIndex + 1} / {steps.length}</span>
+          <span>{activeIndex + 1} / {steps.length}</span>
         </div>
         <div className="intro-tour-progress" aria-hidden="true">
-          {steps.map((item, i) => <span key={item.id} className={i <= stepIndex ? 'is-active' : ''} />)}
+          {steps.map((item, i) => <span key={item.id} className={i <= activeIndex ? 'is-active' : ''} />)}
         </div>
         <h2>{step.title[language]}</h2>
         <p>{step.text[language]}</p>
@@ -175,7 +176,7 @@ export function GuidedTour({ language, stepIndex, onBack, onNext, onSkip }: Tour
             {de ? 'Überspringen' : 'Skip tour'}
           </button>
           <div>
-            {stepIndex > 0
+            {activeIndex > 0
               ? <button type="button" className="intro-tour-back" onClick={onBack}>
                   <ArrowLeft size={16} aria-hidden="true" />{de ? 'Zurück' : 'Back'}
                 </button>
