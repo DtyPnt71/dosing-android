@@ -21,7 +21,7 @@ Siehe [ANDROID-APK.md](ANDROID-APK.md) für die Testversion und [MOBILE-RELEASE.
 - **Eingesetzte Bibliotheken/Frameworks:** Bleiben Eigentum ihrer jeweiligen Rechteinhaber und unterliegen den jeweiligen Drittanbieter-Lizenzen. Es wird kein Eigentum daran beansprucht.
 - **Google Play:** Die endgültige Paket-ID `de.hdt.dosing` und die erforderlichen Store-Unterlagen vor Veröffentlichung prüfen.
 
-Siehe [LICENSE](LICENSE) für den proprietären Rechtevorbehalt und [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) für Drittanbieterhinweise. Das Repository ist derzeit privat. Vor einer möglichen Veröffentlichung auf GitHub sind die vollständige Offenlegung des Quellcodes, frühere Git-Versionen, interne Projektdaten und proprietäre Firmenkennzeichen bewusst zu prüfen.
+Siehe [LICENSE](LICENSE) für den proprietären Rechtevorbehalt und [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) für Drittanbieterhinweise. Das Repository ist aktuell öffentlich einsehbar, bleibt aber für eigenständig entwickelten Quellcode proprietär lizenziert. Die öffentliche Sichtbarkeit umfasst den vollständigen Quellcode und die Git-Historie, unter anderem die Erstellerliste und die im Exportcode enthaltene PIN. Vor weiterem Ausbau prüfen, ob diese projektbezogenen Angaben und Firmenkennzeichen veröffentlicht werden dürfen.
 
 ## Datenschutz & Werbe-ID
 
