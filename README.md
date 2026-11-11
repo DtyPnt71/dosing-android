@@ -22,3 +22,9 @@ Siehe [ANDROID-APK.md](ANDROID-APK.md) für die Testversion und [MOBILE-RELEASE.
 - **Google Play:** Die endgültige Paket-ID `de.hdt.dosiertool` und die erforderlichen Store-Unterlagen vor Veröffentlichung prüfen.
 
 Siehe [LICENSE](LICENSE) für den proprietären Rechtevorbehalt und [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) für Drittanbieterhinweise. Das Repository ist privat. Eine Offenlegung des selbst entwickelten App-Quellcodes ist nicht geplant.
+
+## Google Play und Exportkontrolle
+
+Die **US-Exportbestimmungen (EAR), Verschlüsselungsregeln, Sanktionsvorgaben und ggf. EU-/BAFA-Pflichten** werden vor der Veröffentlichung überprüft. Der technische Erstbefund und die **noch offenen** rechtlichen Prüfpunkte sind in [EXPORT-COMPLIANCE.md](EXPORT-COMPLIANCE.md) dokumentiert.
+
+**Kein signiertes Release-AAB ohne ausdrückliche, eigenverantwortliche Bestätigung der abgeschlossenen Exportkontrollprüfung.** Der GitHub-Actions-Workflow enthält dafür eine separate manuelle Freigabeoption. Die Erklärung in der Google Play Console bleibt zusätzlich erforderlich, wenn Google sie abfragt.
