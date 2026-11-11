@@ -47,11 +47,20 @@ const steps: Step[] = [
       en: 'Expand the chart whenever you need it. It shows your sample trend, target value and tolerance limits when available.',
     },
   },
+  {
+    id: 'menu',
+    title: { de: 'Menü und Einstellungen', en: 'Menu and settings' },
+    text: {
+      de: 'Hier kannst du eigene Materialien anlegen und verwalten oder die Sprache ändern. Mit „Tutorial starten“ kannst du die Einführung jederzeit erneut ansehen.',
+      en: 'Create and manage custom materials or change the language here. Choose “Start tutorial” whenever you want to revisit this introduction.',
+    },
+  },
 ]
 
 type TourProps = {
   language: Language
   stepIndex: number | null
+  menuVisible: boolean
   onBack: () => void
   onNext: () => void
   onSkip: () => void
@@ -92,7 +101,7 @@ export function LanguageWelcome({
 
 export const ONBOARDING_STEPS = steps.length
 
-export function GuidedTour({ language, stepIndex, onBack, onNext, onSkip }: TourProps) {
+export function GuidedTour({ language, stepIndex, menuVisible, onBack, onNext, onSkip }: TourProps) {
   const [highlight, setHighlight] = useState<Highlight | null>(null)
   const panel = useRef<HTMLDivElement>(null)
   const enabled = stepIndex !== null
@@ -100,7 +109,7 @@ export function GuidedTour({ language, stepIndex, onBack, onNext, onSkip }: Tour
   const de = language === 'de'
 
   useEffect(() => {
-    if (!step) return
+    if (!step || (step.id === 'menu' && !menuVisible)) return
     const element = document.querySelector<HTMLElement>(`[data-tour="${step.id}"]`)
     if (!element) { setHighlight(null); return }
 
@@ -130,7 +139,7 @@ export function GuidedTour({ language, stepIndex, onBack, onNext, onSkip }: Tour
       window.removeEventListener('resize', updatePosition)
       observer.disconnect()
     }
-  }, [step?.id])
+  }, [step?.id, menuVisible])
 
   useEffect(() => {
     if (!enabled) return
@@ -161,7 +170,7 @@ export function GuidedTour({ language, stepIndex, onBack, onNext, onSkip }: Tour
       {highlight
         ? <div className="intro-tour-highlight" style={highlight} aria-hidden="true" />
         : <div className="intro-tour-dim" aria-hidden="true" />}
-      <div ref={panel} className="intro-tour-panel" tabIndex={-1} aria-live="polite">
+      <div ref={panel} className={`intro-tour-panel${step.id === 'menu' ? ' intro-tour-panel-menu' : ''}`} tabIndex={-1} aria-live="polite">
         <div className="intro-tour-topline">
           <span>{de ? 'Kurze Einführung' : 'Quick introduction'}</span>
           <span>{activeIndex + 1} / {steps.length}</span>
