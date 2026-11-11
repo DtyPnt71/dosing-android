@@ -28,3 +28,5 @@ Siehe [LICENSE](LICENSE) für den proprietären Rechtevorbehalt und [THIRD-PARTY
 Die **US-Exportbestimmungen (EAR), Verschlüsselungsregeln, Sanktionsvorgaben und ggf. EU-/BAFA-Pflichten** werden vor der Veröffentlichung überprüft. Der technische Erstbefund und die **noch offenen** rechtlichen Prüfpunkte sind in [EXPORT-COMPLIANCE.md](EXPORT-COMPLIANCE.md) dokumentiert.
 
 **Kein signiertes Release-AAB ohne ausdrückliche, eigenverantwortliche Bestätigung der abgeschlossenen Exportkontrollprüfung.** Der GitHub-Actions-Workflow enthält dafür eine separate manuelle Freigabeoption. Die Erklärung in der Google Play Console bleibt zusätzlich erforderlich, wenn Google sie abfragt.
+
+**Aktueller Fortschritt:** Die tatsächliche Debug-APK wurde am 11.11.2026 auf Android-Manifest, Berechtigungen, native Bibliotheken und Paketfunktionen untersucht. Siehe [Binärprüfbericht](AUDITS/2026-11-11-android-binary.md) und die [Play-Store-Startklar-Checkliste](PLAY-STORE-CHECKLIST.md). Die abschließende Rechtsklassifizierung und signierte Release-Prüfung stehen noch aus.
