@@ -74,7 +74,6 @@ export function AppMenu({
       <DropdownMenuContent
         className={`app-action-menu${tourActive ? ' app-action-menu-tour' : ''}`}
         data-tour="menu"
-        onOpenAutoFocus={tourActive ? (event) => event.preventDefault() : undefined}
         onCloseAutoFocus={tourActive ? (event) => event.preventDefault() : undefined}
         onInteractOutside={tourActive ? (event) => event.preventDefault() : undefined}
         onEscapeKeyDown={tourActive ? (event) => event.preventDefault() : undefined}
