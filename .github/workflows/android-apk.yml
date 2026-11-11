@@ -3,6 +3,12 @@ name: HDT Dosier-Tool Android
 # Manual builds avoid generating artifacts on every source change.
 on:
   workflow_dispatch:
+    inputs:
+      export_compliance_confirmed:
+        description: 'US/EU export-control assessment completed for this release (required for signed builds)'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
@@ -92,11 +98,18 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          EXPORT_COMPLIANCE_CONFIRMED: ${{ inputs.export_compliance_confirmed }}
         run: |
           set -euo pipefail
           if [ -z "$ANDROID_KEYSTORE_BASE64" ] || [ -z "$ANDROID_KEYSTORE_PASSWORD" ] || [ -z "$ANDROID_KEY_ALIAS" ] || [ -z "$ANDROID_KEY_PASSWORD" ]; then
             echo "Release signing secrets are not yet configured. Skipping release signing."
             exit 0
+          fi
+          # A signed release must never be produced without an explicit, human
+          # export-control assessment; this does not itself establish compliance.
+          if [ "$EXPORT_COMPLIANCE_CONFIRMED" != "true" ]; then
+            echo "::error::Signed release blocked. Read EXPORT-COMPLIANCE.md and confirm the completed US/EU export-control assessment in the manual workflow form."
+            exit 1
           fi
           printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/hdt-upload-key.p12
           chmod 600 android/app/hdt-upload-key.p12
