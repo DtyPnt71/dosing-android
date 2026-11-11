@@ -76,7 +76,13 @@ Google-Anleitung: [Signieren von Apps](https://developer.android.com/studio/publ
 
 ## 5. Store-Listing und Datenschutz
 
-- [ ] Datenschutzerklärung mit öffentlich erreichbarer URL.
+- [x] Offline lesbarer, trackersfreier **Entwurf** der App-Datenschutzerklärung unter `public/datenschutz.html` und Zugriff über App-Menü/Footer eingebaut.
+- [x] Neue APK #42970018468 ohne `INTERNET`-/`AD_ID`-Berechtigung und mit deaktiviertem Android-Backup erfolgreich gebaut und im CI geprüft.
+- [ ] **Echtes Android-Gerät testen:** App-Start, lokales Versions-Asset, PDF-Erstellung und Teilen per E-Mail ohne Internetberechtigung.
+- [ ] Datenschutzkontakt-E-Mail, ladungsfähige Anschrift und korrekte Verantwortlichkeit (Timo Burian oder ggf. HDT GmbH) ergänzen.
+- [ ] Öffentliche Datenschutzerklärung als HTML unter weltweit zugänglicher HTTPS-URL ohne Login hosten; Hostingprotokolle und Speicherfristen korrekt beschreiben.
+- [ ] `mobile-release.json` – `privacyPolicyUrl` auf tatsächlich erreichbare Adresse und `privacyPolicyStatus` erst nach Prüfung auf `approved` setzen; CI blockiert signierte Release-Builds bis dahin.
+- [ ] Datenschutzerklärung mit öffentlich erreichbarer URL in Play Console hinterlegen.
 - [ ] Datenverarbeitung/Play-Console-Datensicherheit, lokale Speicherung, Android-App-Backup und freiwilliger PDF-/Mail-Versand korrekt erklären.
 - [ ] Zielgruppe, App-Zugriff, Werbung, Altersfreigabe, Datenkategorien, Länder und Inhaltsangaben wahrheitsgemäß festlegen.
 - [ ] Hochauflösendes App-Icon, Featuregrafik, Screenshots und deutsche Storebeschreibung vorbereiten.
