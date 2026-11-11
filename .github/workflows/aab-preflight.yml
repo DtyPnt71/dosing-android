@@ -1,0 +1,99 @@
+name: Android AAB technical preflight (unsigned)
+
+# One-time technical packaging test. This never produces a Play-uploadable bundle.
+# Do not merge this temporary workflow or mistake the unsigned result for a release.
+on:
+  push:
+    branches: [chore/aab-release-preflight]
+    paths: ['.github/workflows/aab-preflight.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unsigned-aab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out app
+        uses: actions/checkout@v4
+
+      - name: Verify policy metadata
+        run: python3 scripts/verify_policy_sync.py
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools'
+
+      - name: Install packages and build web application
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
+
+      - name: Generate Android project
+        run: |
+          npx cap add android
+          npx cap sync android
+          python3 scripts/harden_android.py
+
+      - name: Set release version from metadata
+        run: |
+          python3 - <<'PY'
+          import json, re
+          from pathlib import Path
+          release = json.loads(Path('mobile-release.json').read_text())
+          gradle = Path('android/app/build.gradle')
+          data = gradle.read_text()
+          data, n1 = re.subn(r'(?m)^(\s*versionCode\s+)\d+', lambda m: m.group(1) + str(release['androidVersionCode']), data, count=1)
+          data, n2 = re.subn(r'''(?m)^(\s*versionName\s+)(["'])(.*?)\2''', lambda m: m.group(1) + m.group(2) + release['androidVersionName'] + m.group(2), data, count=1)
+          if (n1, n2) != (1, 1):
+              raise SystemExit("Release version patch failed")
+          gradle.write_text(data)
+          print('Release:', release['appId'], release['androidVersionName'], 'code', release['androidVersionCode'])
+          PY
+
+      - name: Create launcher icon
+        run: |
+          mkdir -p assets
+          node --input-type=module <<'NODE'
+          import sharp from 'sharp'
+          await sharp('public/icon-512x512.png')
+            .resize(1024, 1024, { fit: 'contain' })
+            .png()
+            .toFile('assets/icon.png')
+          NODE
+          npx capacitor-assets generate --android --iconBackgroundColor '#f1f5f8' --splashBackgroundColor '#f1f5f8'
+
+      - name: Build unsigned release bundle for technical inspection
+        run: |
+          chmod +x android/gradlew
+          cd android
+          ./gradlew bundleRelease --no-daemon
+          cd ..
+          python3 scripts/verify_android_privacy.py release
+          test -s android/app/build/outputs/bundle/release/app-release.aab
+          unzip -t android/app/build/outputs/bundle/release/app-release.aab | tail -n 2
+          mkdir -p review
+          cp android/app/build/outputs/bundle/release/app-release.aab review/HDT-Dosier-Tool-UNSIGNED-REVIEW-ONLY.aab
+          sha256sum review/HDT-Dosier-Tool-UNSIGNED-REVIEW-ONLY.aab
+
+      - name: Upload unsigned AAB for review only
+        uses: actions/upload-artifact@v4
+        with:
+          name: HDT-Dosier-Tool-UNSIGNED-REVIEW-ONLY
+          path: review/HDT-Dosier-Tool-UNSIGNED-REVIEW-ONLY.aab
+          if-no-files-found: error
+          retention-days: 2
