@@ -4,5 +4,7 @@
   "copyrightOwner": "Timo Burian",
   "androidVersionCode": 1,
   "androidVersionName": "3.3.1",
-  "notes": "Vor erster Store-Veröffentlichung HDT-Marken-/Logorechte und Paket-ID bestätigen. androidVersionCode bei jedem Release erhöhen."
+  "notes": "Copyright an eigenen App-Bestandteilen: Timo Burian. HDT-Logo und HDT-Kennzeichen: Eigentum der HDT GmbH, Nutzung mit Genehmigung. App-Paket-ID vor Store-Einreichung bestätigen; androidVersionCode bei jedem Release erhöhen.",
+  "logoOwner": "HDT Hochdruck-Dosier-Technik GmbH (HDT GmbH)",
+  "hdtBrandUsage": "Mit Genehmigung der HDT GmbH"
 }
