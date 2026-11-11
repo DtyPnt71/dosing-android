@@ -1,22 +1,37 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Calculator, ChevronRight, CircleHelp, Download, FileDown, Info, Languages, Menu, Plus, RefreshCw, RotateCcw, Scale, Settings2, Trash2, Weight, Wrench } from 'lucide-react'
+import { ChevronRight, Download, FileDown, RefreshCw, RotateCcw, Scale, Settings2, Trash2, Weight, Wrench } from 'lucide-react'
 import baseMaterialsJson from './materials.json'
 import creatorsJson from './creator-names.json'
 import { Button } from './components/ui/button'
 import { Dialog, DialogContent } from './components/ui/dialog'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './components/ui/dropdown-menu'
+import { AppMenu } from './components/AppMenu'
 import { MaterialPicker } from './components/MaterialPicker'
 import { MaterialManager } from './components/MaterialManager'
 import { ExportDialog } from './components/ExportDialog'
 import { StatusBadge } from './components/StatusBadge'
 import { SampleChart } from './components/SampleChart'
 import { WeightField } from './components/WeightField'
+import { GuidedTour, LanguageWelcome, ONBOARDING_STEPS } from './components/GuidedTour'
 import { translator } from './lib/i18n'
 import { cn, formatPercent, parseDecimal } from './lib/utils'
 import type { DoseStatus, Family, Language, Material, MaterialMap, Sample } from './lib/types'
 
 const CUSTOM_MATERIALS_KEY = 'hdt-custom-materials-v3'
 const LANGUAGE_KEY = 'hdt-language-v3'
+const ONBOARDING_KEY = 'hdt-first-introduction-v1'
+const WEIGHT_NOTICE_KEY = 'hdt-weight-notice-seen-v1'
+
+function storedLanguage(): Language | null {
+  try {
+    const value = localStorage.getItem(LANGUAGE_KEY) || localStorage.getItem('hdt-lang')
+    return value === 'de' || value === 'en' ? value : null
+  } catch { return null }
+}
+
+function introductionFinished(): boolean {
+  try { return localStorage.getItem(ONBOARDING_KEY) === 'done' }
+  catch { return false }
+}
 const CURRENT_VERSION = 'v3.3.1'
 
 const familyNames: Record<Family, { de: string; en: string }> = {
@@ -45,7 +60,10 @@ function getDoseStatus(value: number | null, material: Material | null): DoseSta
 }
 
 function App() {
-  const [language, setLanguage] = useState<Language>(() => ((localStorage.getItem(LANGUAGE_KEY) || localStorage.getItem('hdt-lang')) === 'en' ? 'en' : 'de'))
+  const [language, setLanguage] = useState<Language>(() => storedLanguage() ?? 'de')
+  const [chooseLanguageOpen, setChooseLanguageOpen] = useState(() => storedLanguage() === null)
+  const [tourStep, setTourStep] = useState<number | null>(() => storedLanguage() && !introductionFinished() ? 0 : null)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [family, setFamily] = useState<Family>('PS')
   const [materialId, setMaterialId] = useState('')
   const [weightA, setWeightA] = useState('')
@@ -55,7 +73,7 @@ function App() {
   const [managerMode, setManagerMode] = useState<'add' | 'manage' | null>(null)
   const [exportOpen, setExportOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState<'help' | 'calculation' | 'about' | 'imprint' | 'privacy' | null>(null)
-  const [weightNoticeOpen, setWeightNoticeOpen] = useState(true)
+  const [weightNoticeOpen, setWeightNoticeOpen] = useState(false)
   const [updateAvailable, setUpdateAvailable] = useState(() => !!window.__HDT_UPDATE_PENDING__)
   const [updatePhase, setUpdatePhase] = useState('')
   const [updateError, setUpdateError] = useState(false)
@@ -65,6 +83,8 @@ function App() {
   const [toast, setToast] = useState('')
   const t = translator(language)
   const locale = language === 'de' ? 'de-DE' : 'en-US'
+  const menuTourActive = tourStep === ONBOARDING_STEPS - 1 && !chooseLanguageOpen
+  const menuOpen = userMenuOpen || menuTourActive
 
   const baseMaterials = baseMaterialsJson as MaterialMap
   const allMaterials = useMemo<MaterialMap>(() => ({
@@ -185,10 +205,27 @@ function App() {
     setToast(language === 'de' ? 'Material gelöscht' : 'Material deleted')
   }
 
+  const chooseLanguage = (next: Language) => {
+    setLanguage(next)
+    try { localStorage.setItem(LANGUAGE_KEY, next) } catch { /* local storage not available */ }
+    setChooseLanguageOpen(false)
+    setTourStep(0)
+  }
+
   const toggleLanguage = () => {
     const next = language === 'de' ? 'en' : 'de'
     setLanguage(next)
-    localStorage.setItem(LANGUAGE_KEY, next)
+    try { localStorage.setItem(LANGUAGE_KEY, next) } catch { /* local storage not available */ }
+  }
+
+  const finishTour = (skipped = false) => {
+    try {
+      localStorage.setItem(ONBOARDING_KEY, 'done')
+      if (!skipped) localStorage.setItem(WEIGHT_NOTICE_KEY, 'done')
+      else if (localStorage.getItem(WEIGHT_NOTICE_KEY) !== 'done') setWeightNoticeOpen(true)
+    } catch { /* still finish the current tour */ }
+    setTourStep(null)
+    setUserMenuOpen(false)
   }
 
   const selectMaterial = (material: Material) => {
@@ -224,6 +261,19 @@ function App() {
 
   return (
     <div className="app-shell">
+      <LanguageWelcome open={chooseLanguageOpen} onSelect={chooseLanguage} />
+      <GuidedTour
+        language={language}
+        stepIndex={chooseLanguageOpen ? null : tourStep}
+        menuVisible={menuOpen}
+        onBack={() => setTourStep((current) => current == null ? null : Math.max(0, current - 1))}
+        onNext={() => {
+          if (tourStep === null) return
+          if (tourStep >= ONBOARDING_STEPS - 1) finishTour()
+          else setTourStep(tourStep + 1)
+        }}
+        onSkip={() => finishTour(true)}
+      />
       <Dialog open={!!updatePhase} onOpenChange={(open) => { if (!open && updateError) setUpdatePhase('') }}><DialogContent dismissible={updateError} title={language === 'de' ? 'Dosier-Tool aktualisieren' : 'Update dosing tool'} description={language === 'de' ? 'Die App startet anschließend automatisch neu.' : 'The app will restart automatically.'}>
         <div className="update-progress" role="status" aria-live="polite">
           <div className="update-progress-icon"><RefreshCw className={updateError ? '' : 'update-spin'} /></div>
@@ -239,23 +289,23 @@ function App() {
         </div>
         <div className="header-actions">
           <Button variant="secondary" size="icon" onClick={() => window.location.reload()} aria-label={language === 'de' ? 'Website neu laden' : 'Reload website'} title={language === 'de' ? 'Website neu laden' : 'Reload website'}><RotateCcw className="size-5" /></Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild><Button variant="secondary" size="icon" aria-label={t('menu')}><Menu className="size-5" /></Button></DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>{t('menu')}</DropdownMenuLabel>
-              <DropdownMenuItem disabled={!samples.length} onSelect={() => setExportOpen(true)}><FileDown className="size-4 text-cyan-700" />{t('export')}</DropdownMenuItem>
-              <DropdownMenuItem onSelect={toggleLanguage}><Languages className="size-4" />{t('language')}</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={() => setManagerMode('add')}><Plus className="size-4" />{t('addMaterial')}</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setManagerMode('manage')}><Settings2 className="size-4" />{t('manageMaterials')}</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={() => setInfoOpen('calculation')}><Calculator className="size-4" />{language === 'de' ? 'Berechnung & Gewicht' : 'Calculation & weight'}</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => void checkForUpdate(false)}><RefreshCw className="size-4" />{language === 'de' ? 'Nach Updates suchen' : 'Check for updates'}</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setInfoOpen('help')}><CircleHelp className="size-4" />{t('help')}</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setInfoOpen('about')}><Info className="size-4" />{t('about')}</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setInfoOpen('privacy')}><Info className="size-4" />{language === 'de' ? 'Datenschutzerklärung' : 'Privacy policy'}</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <AppMenu
+            language={language}
+            open={menuOpen}
+            onOpenChange={(next) => { if (!menuTourActive) setUserMenuOpen(next) }}
+            tourActive={menuTourActive}
+            hasSamples={samples.length > 0}
+            onExport={() => setExportOpen(true)}
+            onAddMaterial={() => setManagerMode('add')}
+            onManageMaterials={() => setManagerMode('manage')}
+            onChangeLanguage={toggleLanguage}
+            onTutorial={() => { setUserMenuOpen(false); setTourStep(0) }}
+            onCalculation={() => setInfoOpen('calculation')}
+            onCheckUpdates={() => void checkForUpdate(false)}
+            onHelp={() => setInfoOpen('help')}
+            onAbout={() => setInfoOpen('about')}
+            onPrivacy={() => setInfoOpen('privacy')}
+          />
         </div>
       </header>
 
@@ -268,7 +318,7 @@ function App() {
           <span className={cn(samples.length && 'is-done')}><span>3</span>{t('history')}</span>
         </div>
 
-        <section className="tool-card material-card">
+        <section className="tool-card material-card" data-tour="material">
           <div className="section-heading"><div className="section-icon"><Settings2 /></div><div><h2>{t('material')}</h2></div></div>
           <div className="family-tabs" role="radiogroup" aria-label="Materialsorte">
             {(['PU', 'PS', 'SI'] as Family[]).map((item) => (
@@ -283,12 +333,12 @@ function App() {
           </div>
         </section>
 
-        <section className="tool-card weights-card">
+        <section className="tool-card weights-card" data-tour="weights">
           <div className="section-heading"><div className="section-icon"><Weight /></div><div><h2>{t('weights')}</h2></div></div>
           <div className="weights-grid"><WeightField id="weight-a" label={t('weightA')} value={weightA} unit={t('grams')} onChange={setWeightA} /><WeightField id="weight-b" label={t('weightB')} value={weightB} unit={t('grams')} onChange={setWeightB} /></div>
         </section>
 
-        <section className={cn('result-card', liveStatus !== 'neutral' && `result-${liveStatus}`)} aria-live="polite">
+        <section className={cn('result-card', liveStatus !== 'neutral' && `result-${liveStatus}`)} data-tour="sample" aria-live="polite">
           <div className="result-main">
             <div><span className="eyebrow">{t('currentSample')}</span><div className="result-number">{formatPercent(liveResult, locale)}<small>{liveResult == null ? '' : ' %'}</small></div></div>
             <div className="result-status">
@@ -301,7 +351,7 @@ function App() {
           {!canAddSample ? <p className="disabled-hint">{disabledHint}</p> : null}
         </section>
 
-        <section className="series-card">
+        <section className="series-card" data-tour="series">
           <div className="series-header"><div><h2>{t('history')}</h2><p>{t('maxFive')}</p></div>{samples.length ? <Button variant="secondary" size="sm" onClick={() => setExportOpen(true)}><FileDown className="size-4" />{t('export')}</Button> : null}</div>
           {samples.length ? (
             <div className="sample-list">
@@ -322,13 +372,13 @@ function App() {
       <MaterialManager mode={managerMode} customMaterials={customMaterials} t={t} onClose={() => setManagerMode(null)} onSave={saveCustomMaterial} onDelete={deleteCustomMaterial} />
       <ExportDialog open={exportOpen} onOpenChange={setExportOpen} language={language} family={family} material={selectedMaterial} samples={samples} mean={mean} creators={(creatorsJson as { names: string[] }).names} t={t} />
 
-      <Dialog open={weightNoticeOpen} onOpenChange={setWeightNoticeOpen}><DialogContent title={language === 'de' ? 'Wichtiger Hinweis' : 'Important notice'} description={language === 'de' ? 'Berechnung ausschließlich nach Gewicht' : 'Calculation based on weight only'}><div className="weight-notice"><div className="weight-notice-icon"><Scale /></div><p>{language === 'de' ? <>Dieses Tool berechnet das Mischungsverhältnis ausschließlich anhand der <strong>gewogenen Mengen</strong> von Komponente A und B. Volumenangaben dürfen nicht verwendet werden.</> : <>This tool calculates the mixing ratio exclusively from the <strong>weighed quantities</strong> of components A and B. Do not use volume measurements.</>}</p><Button className="w-full" onClick={() => setWeightNoticeOpen(false)}>{language === 'de' ? 'Verstanden' : 'Understood'}</Button></div></DialogContent></Dialog>
+      <Dialog open={weightNoticeOpen} onOpenChange={setWeightNoticeOpen}><DialogContent title={language === 'de' ? 'Wichtiger Hinweis' : 'Important notice'} description={language === 'de' ? 'Berechnung ausschließlich nach Gewicht' : 'Calculation based on weight only'}><div className="weight-notice"><div className="weight-notice-icon"><Scale /></div><p>{language === 'de' ? <>Dieses Tool berechnet das Mischungsverhältnis ausschließlich anhand der <strong>gewogenen Mengen</strong> von Komponente A und B. Volumenangaben dürfen nicht verwendet werden.</> : <>This tool calculates the mixing ratio exclusively from the <strong>weighed quantities</strong> of components A and B. Do not use volume measurements.</>}</p><Button className="w-full" onClick={() => { setWeightNoticeOpen(false); try { localStorage.setItem(WEIGHT_NOTICE_KEY, 'done') } catch { /* ignored */ } }}>{language === 'de' ? 'Verstanden' : 'Understood'}</Button></div></DialogContent></Dialog>
 
       <Dialog open={infoOpen != null} onOpenChange={(open) => !open && setInfoOpen(null)}><DialogContent title={infoOpen === 'help' ? t('help') : infoOpen === 'calculation' ? (language === 'de' ? 'Berechnung & Gewicht' : 'Calculation & weight') : infoOpen === 'imprint' ? 'Impressum' : infoOpen === 'privacy' ? (language === 'de' ? 'Datenschutzerklärung' : 'Privacy policy') : t('about')}>
         {infoOpen === 'privacy'
           ? <iframe title={language === 'de' ? 'Datenschutzerklärung' : 'Privacy policy'} src="./datenschutz.html" className="w-full min-h-[55dvh] border-0 bg-white" />
           : <div className="prose-panel">
-          {infoOpen === 'help' ? <ol><li>{language === 'de' ? 'Materialsorte und Materialtyp auswählen.' : 'Select material family and type.'}</li><li>{language === 'de' ? 'Gewichte von Komponente A und B eingeben.' : 'Enter weights for components A and B.'}</li><li>{language === 'de' ? 'Live-Ergebnis und Toleranz prüfen.' : 'Check live result and tolerance.'}</li><li>{language === 'de' ? 'Probe übernehmen und bis zu fünf Messungen vergleichen.' : 'Add the sample and compare up to five measurements.'}</li></ol> : infoOpen === 'calculation' ? <><div className="calculation-box"><span>B</span><i>÷</i><span>A</span><i>×</i><span>100</span><strong>%</strong></div><p>{t('formula')}</p><p>{language === 'de' ? 'Verwende ausschließlich gewogene Mengen in derselben Einheit. Gramm und Kilogramm dürfen nicht innerhalb einer Berechnung gemischt werden.' : 'Use weighed quantities in the same unit only. Do not mix grams and kilograms within one calculation.'}</p></> : infoOpen === 'imprint' ? <p><strong>Timo Burian</strong><br />c/o HDT Hochdruck-Dosier-Technik GmbH<br />Müllerstraße 7<br />46242 Bottrop<br />Deutschland<br /><br />E-Mail: <a href="mailto:timo.burian@h-d-tec.de">timo.burian@h-d-tec.de</a><br /><br />{language === 'de' ? 'HDT-Logo und HDT-Markenkennzeichen: Eigentum der HDT Hochdruck-Dosier-Technik GmbH. Nutzung mit Genehmigung.' : 'HDT logo and brand identifiers: property of HDT Hochdruck-Dosier-Technik GmbH. Used with permission.'}</p> : <><p><strong>HDT Dosier-Tool {CURRENT_VERSION}</strong></p><p>Copyright © 2026 Timo Burian.<br />{language === 'de' ? 'Alle Rechte vorbehalten.' : 'All rights reserved.'}</p><p>{language === 'de' ? 'Das HDT-Logo und die HDT-Markenkennzeichen sind Eigentum der HDT Hochdruck-Dosier-Technik GmbH (HDT GmbH) und werden mit deren Genehmigung verwendet.' : 'The HDT logo and HDT brand identifiers are the property of HDT Hochdruck-Dosier-Technik GmbH (HDT GmbH) and are used with permission.'}</p><p className="text-slate-500">{language === 'de' ? 'Verwendete Open-Source-Bibliotheken unterliegen ihren eigenen Lizenzen.' : 'Third-party open-source libraries remain subject to their own licenses.'}<br />Android · React · Capacitor</p></>}
+          {infoOpen === 'help' ? <><ol><li>{language === 'de' ? 'Materialsorte und Materialtyp auswählen.' : 'Select material family and type.'}</li><li>{language === 'de' ? 'Gewichte von Komponente A und B eingeben.' : 'Enter weights for components A and B.'}</li><li>{language === 'de' ? 'Live-Ergebnis und Toleranz prüfen.' : 'Check live result and tolerance.'}</li><li>{language === 'de' ? 'Probe übernehmen und bis zu fünf Messungen vergleichen.' : 'Add the sample and compare up to five measurements.'}</li></ol><Button className="mt-4 w-full" variant="secondary" onClick={() => { setInfoOpen(null); setTourStep(0) }}>{language === 'de' ? 'Einführung erneut starten' : 'Restart introduction'}</Button></> : infoOpen === 'calculation' ? <><div className="calculation-box"><span>B</span><i>÷</i><span>A</span><i>×</i><span>100</span><strong>%</strong></div><p>{t('formula')}</p><p>{language === 'de' ? 'Verwende ausschließlich gewogene Mengen in derselben Einheit. Gramm und Kilogramm dürfen nicht innerhalb einer Berechnung gemischt werden.' : 'Use weighed quantities in the same unit only. Do not mix grams and kilograms within one calculation.'}</p></> : infoOpen === 'imprint' ? <p><strong>Timo Burian</strong><br />c/o HDT Hochdruck-Dosier-Technik GmbH<br />Müllerstraße 7<br />46242 Bottrop<br />Deutschland<br /><br />E-Mail: <a href="mailto:timo.burian@h-d-tec.de">timo.burian@h-d-tec.de</a><br /><br />{language === 'de' ? 'HDT-Logo und HDT-Markenkennzeichen: Eigentum der HDT Hochdruck-Dosier-Technik GmbH. Nutzung mit Genehmigung.' : 'HDT logo and brand identifiers: property of HDT Hochdruck-Dosier-Technik GmbH. Used with permission.'}</p> : <><p><strong>HDT Dosier-Tool {CURRENT_VERSION}</strong></p><p>Copyright © 2026 Timo Burian.<br />{language === 'de' ? 'Alle Rechte vorbehalten.' : 'All rights reserved.'}</p><p>{language === 'de' ? 'Das HDT-Logo und die HDT-Markenkennzeichen sind Eigentum der HDT Hochdruck-Dosier-Technik GmbH (HDT GmbH) und werden mit deren Genehmigung verwendet.' : 'The HDT logo and HDT brand identifiers are the property of HDT Hochdruck-Dosier-Technik GmbH (HDT GmbH) and are used with permission.'}</p><p className="text-slate-500">{language === 'de' ? 'Verwendete Open-Source-Bibliotheken unterliegen ihren eigenen Lizenzen.' : 'Third-party open-source libraries remain subject to their own licenses.'}<br />Android · React · Capacitor</p></>}
         </div>}
       </DialogContent></Dialog>
 

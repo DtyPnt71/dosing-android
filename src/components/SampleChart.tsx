@@ -43,7 +43,7 @@ export function SampleChart({ samples, material, language }: Props) {
   const tickFormat = new Intl.NumberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2, notation: top >= 10000 ? 'compact' : 'standard' })
   const title = de ? 'Probenverlauf' : 'Sample trend'
 
-  return <section className="sample-chart-section chart-redesign">
+  return <section className="sample-chart-section chart-redesign" data-tour="chart">
     <button className="chart-disclosure" onClick={() => setVisible(v => !v)} aria-expanded={visible} aria-controls={id}>
       <span className="chart-disclosure-icon"><ChartNoAxesCombined size={22} /></span>
       <span className="chart-disclosure-copy"><strong>{de ? 'Diagramm' : 'Chart'}</strong><small>{visible ? (de ? 'Probenverlauf ausblenden' : 'Hide sample trend') : (de ? 'Probenverlauf anzeigen' : 'Show sample trend')}</small></span>
