@@ -1,6 +1,6 @@
 # HDT Dosier-Tool – Android
 
-**Eigenständige Android-App** · Inhaber/Copyright: **Timo Burian**
+**Eigenständige Android-App** · Rechteinhaber der eigenen App-Bestandteile: **Timo Burian** · **Alle Rechte vorbehalten**
 
 Dieses Repository enthält die Android-Version des HDT Dosier-Tools. Die App basiert auf React, TypeScript, Vite und Capacitor. PDF-Berichte können über das native Android-Teilen-Menü direkt per E-Mail verschickt werden.
 
@@ -14,4 +14,11 @@ Die bestehende Webversion unter https://dosing.netlify.app/ wird **separat** im 
 
 Siehe [ANDROID-APK.md](ANDROID-APK.md) für die Testversion und [MOBILE-RELEASE.md](MOBILE-RELEASE.md) für Signierung, Google Play und Veröffentlichungen.
 
-**Hinweis:** Vor einer öffentlichen Veröffentlichung die Rechte an HDT-Namen, -Logo und Firmenimpressum sowie die endgültige Paket-ID `de.hdt.dosiertool` klären.
+## Urheberrecht, Markenrechte und Lizenz
+
+- **Eigener App-Code, selbst entwickelte Funktionen, eigene UI und eigene Projektdateien:** Copyright © 2026 **Timo Burian**. Alle Rechte vorbehalten, soweit keine Rechte Dritter bestehen. Das Projekt wird **proprietär** entwickelt.
+- **HDT-Logo und HDT-Markenkennzeichen:** Eigentum der **HDT Hochdruck-Dosier-Technik GmbH (HDT GmbH)**. Nutzung durch Timo Burian mit Genehmigung der HDT GmbH; keine Lizenz für die Wiederverwendung durch Dritte.
+- **Eingesetzte Bibliotheken/Frameworks:** Bleiben Eigentum ihrer jeweiligen Rechteinhaber und unterliegen den jeweiligen Drittanbieter-Lizenzen. Es wird kein Eigentum daran beansprucht.
+- **Google Play:** Die endgültige Paket-ID `de.hdt.dosiertool` und die erforderlichen Store-Unterlagen vor Veröffentlichung prüfen.
+
+Siehe [LICENSE](LICENSE) für den proprietären Rechtevorbehalt und [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) für Drittanbieterhinweise. Das Repository ist privat. Eine Offenlegung des selbst entwickelten App-Quellcodes ist nicht geplant.
