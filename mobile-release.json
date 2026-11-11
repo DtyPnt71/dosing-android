@@ -1,5 +1,5 @@
 {
-  "appId": "de.hdt.dosiertool",
+  "appId": "de.hdt.dosing",
   "displayName": "HDT Dosier-Tool",
   "copyrightOwner": "Timo Burian",
   "androidVersionCode": 1,
@@ -7,6 +7,8 @@
   "notes": "Copyright an eigenen App-Bestandteilen: Timo Burian. HDT-Logo und HDT-Kennzeichen: Eigentum der HDT GmbH, Nutzung mit Genehmigung. App-Paket-ID vor Store-Einreichung bestätigen; androidVersionCode bei jedem Release erhöhen.",
   "logoOwner": "HDT Hochdruck-Dosier-Technik GmbH (HDT GmbH)",
   "hdtBrandUsage": "Mit Genehmigung der HDT GmbH",
-  "privacyPolicyUrl": "",
-  "privacyPolicyStatus": "draft"
+  "privacyPolicyUrl": "https://dtypnt71.github.io/dosing-android/",
+  "privacyPolicyStatus": "draft",
+  "privacyContactEmail": "timo.burian@h-d-tec.de",
+  "privacyContactAddress": "Timo Burian, c/o HDT Hochdruck-Dosier-Technik GmbH, Müllerstraße 7, 46242 Bottrop, Deutschland"
 }
