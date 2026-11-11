@@ -23,6 +23,14 @@ Siehe [ANDROID-APK.md](ANDROID-APK.md) für die Testversion und [MOBILE-RELEASE.
 
 Siehe [LICENSE](LICENSE) für den proprietären Rechtevorbehalt und [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) für Drittanbieterhinweise. Das Repository ist privat. Eine Offenlegung des selbst entwickelten App-Quellcodes ist nicht geplant.
 
+## Datenschutz & Werbe-ID
+
+- **Keine Werbung und keine Werbe-ID:** Der eigene Anwendungscode und die bisherige APK verwenden kein Advertising-ID-SDK.
+- **Privacy-Hardening für Android:** Der Android-Build entfernt die Berechtigungen `AD_ID` und `INTERNET`, deaktiviert Cloud-/Gerätetransfer-Backups und prüft das zusammengeführte Manifest in CI. Der neue Build und PDF-/Mail-Teilen müssen anschließend auf Android getestet werden.
+- **Datenschutzerklärung (Entwurf):** [`public/datenschutz.html`](public/datenschutz.html) – in der Android-App lokal über **Datenschutz** erreichbar; Kontakt- und Hostingangaben vor Veröffentlichung noch ergänzen.
+- **Play-Console-Datensicherheit:** [PLAY-DATA-SAFETY.md](PLAY-DATA-SAFETY.md). Die finale Erklärung wird auf den tatsächlich geprüften Release-Build abgestimmt.
+- **Öffentliche Datenschutz-URL:** Erst nach Vervollständigung separat, weltweit per HTTPS bereitstellen, beispielsweise über GitHub Pages. Die App-Quellen bleiben privat.
+
 ## Google Play und Exportkontrolle
 
 Die **US-Exportbestimmungen (EAR), Verschlüsselungsregeln, Sanktionsvorgaben und ggf. EU-/BAFA-Pflichten** werden vor der Veröffentlichung überprüft. Der technische Erstbefund und die **noch offenen** rechtlichen Prüfpunkte sind in [EXPORT-COMPLIANCE.md](EXPORT-COMPLIANCE.md) dokumentiert.
