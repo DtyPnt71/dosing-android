@@ -1,6 +1,7 @@
 name: HDT Dosier-Tool Android
 
 # Manual builds avoid generating artifacts on every source change.
+# Second build validates the fixed grouped menu component.
 on:
   push:
     branches: [feature/first-run-onboarding]
