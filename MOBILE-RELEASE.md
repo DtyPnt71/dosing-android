@@ -17,6 +17,7 @@
 - **HDT-Logo und HDT-Markenkennzeichen:** Eigentum der **HDT Hochdruck-Dosier-Technik GmbH (HDT GmbH)**. Timo Burian hat die Nutzung nach eigener Angabe genehmigt bekommen. Diese Verwendung begründet keine Übertragung der Logo- oder Markenrechte. Diese Zuordnung steht auch im **Über-Dialog** der App.
 - **Bibliotheken und Assets Dritter:** Rechte verbleiben bei den jeweiligen Inhabern; eigene Lizenzen und Hinweise beachten, siehe [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 - **Vor der Store-Freigabe:** Zustimmung zur Nutzung von HDT-Name/Logo nach Möglichkeit schriftlich dokumentieren, falls Google Play einen Berechtigungsnachweis verlangt. App-Name und Paket-ID `de.hdt.dosiertool` verbindlich festlegen.
+- **Programmrechte bei Tätigkeit für HDT:** Falls die App in Wahrnehmung arbeitsvertraglicher Aufgaben oder nach Arbeitgeberanweisungen entstanden ist, ist die Zuordnung der vermögensrechtlichen Rechte gesondert zu klären (§ 69b UrhG). Die Erlaubnis zur Nutzung von Logo/Name regelt nicht automatisch die Nutzungsrechte am Quellcode. Eine eindeutige schriftliche Vereinbarung zur eigenständigen Veröffentlichung kann sinnvoll sein.
 - **Bestehende Website unverändert lassen:** Alle bisherigen Änderungen befinden sich im separaten Branch `main`. Kein Merge nach `main` ohne gesonderte Entscheidung.
 - Bei der aktuellen React-/Capacitor-Struktur ist später eine bewusste Aufteilung von Web- und App-Quellcode sinnvoll. Das darf aber weder die vorhandene Website noch den PDF-Versand verändern.
 
