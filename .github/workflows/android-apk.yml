@@ -2,6 +2,9 @@ name: HDT Dosier-Tool Android
 
 # Manual builds avoid generating artifacts on every source change.
 on:
+  push:
+    branches: [feature/first-run-onboarding]
+    paths: ['.github/workflows/android-apk.yml']
   workflow_dispatch:
     inputs:
       export_compliance_confirmed:
