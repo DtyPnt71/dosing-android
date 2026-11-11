@@ -391,3 +391,63 @@ body { background: #f1f5f8; }
   .intro-tour-highlight { transition: none; }
   .intro-language-options button { transition: none; }
 }
+
+
+/* Android-inspired settings menu: restrained groups, readable actions and touch targets. */
+.app-action-menu {
+  width: min(408px, calc(100vw - 24px)); max-height: min(78dvh, 710px);
+  padding: 10px; overflow-y: auto; overscroll-behavior: contain;
+  border: 1px solid #cbd5e1; border-radius: 20px; background: #fff;
+  box-shadow: 0 16px 44px rgba(15, 35, 47, .18);
+  color: #142b39; scrollbar-width: thin; scrollbar-color: #b2cbd5 transparent;
+}
+.app-menu-heading {
+  padding: 14px 14px 12px; border-radius: 13px;
+  background: #edf6f8; border: 1px solid #d3e7eb;
+}
+.app-menu-brand { font-size: 1.06rem; font-weight: 800; letter-spacing: -.02em; color: #075d72; }
+.app-menu-brand > span { margin-left: 5px; color: #192f3c; }
+.app-menu-heading p { font-size: .82rem; color: #44616e; margin: 4px 0 0; }
+.app-menu-group { padding: 4px 0; }
+.app-menu-group [role="group"] { display: grid; gap: 2px; }
+.app-menu-group [role="menuitem"] { margin: 1px 0; }
+.app-menu-group [role="menuitem"][data-highlighted] {
+  background: #eaf6f8; color: #142b39; outline: none;
+}
+.app-menu-group [role="menuitem"][data-disabled] { opacity: .48; cursor: not-allowed; }
+.app-menu-action {
+  display: flex; align-items: center; gap: 11px; min-height: 60px;
+  border: 1px solid transparent; border-radius: 12px; padding: 8px 10px;
+  color: #172f40; cursor: pointer;
+}
+.app-menu-icon {
+  display: grid; place-items: center; flex: 0 0 38px; height: 38px;
+  border-radius: 10px; background: #eff6f8; color: #126f82;
+}
+.app-menu-action-text { min-width: 0; display: grid; flex: 1; gap: 2px; text-align: left; }
+.app-menu-action-text strong { font-size: .92rem; line-height: 1.3; font-weight: 680; }
+.app-menu-action-text small { font-size: .77rem; font-weight: 450; line-height: 1.35; color: #526b79; }
+.app-menu-chevron { color: #7893a1; flex-shrink: 0; }
+.app-menu-trailing { padding: 4px 7px; border: 1px solid #d9e8ec; border-radius: 7px; background: #f7fbfc; color: #356777; font-size: .72rem; font-weight: 750; }
+.app-menu-action-featured .app-menu-icon { background: #daf0f3; color: #075c72; }
+.app-menu-action-featured .app-menu-action-text strong { color: #075c72; }
+.app-menu-bottom { margin: 4px 10px 2px; padding-top: 10px; border-top: 1px solid #edf2f5; text-align: center; font-size: .72rem; color: #7893a1; }
+.app-action-menu-tour { max-height: min(50dvh, 440px); }
+.app-action-menu-tour .app-menu-heading { padding: 9px 12px; }
+.app-action-menu-tour .app-menu-action { min-height: 42px; padding-block: 5px; }
+.app-action-menu-tour .app-menu-icon { height: 31px; flex-basis: 31px; }
+.app-action-menu-tour .app-menu-action-text small { display: none; }
+.app-action-menu-tour .app-menu-group { padding: 2px 0; }
+.app-action-menu-tour .app-menu-group [role="menuitem"] { margin: 0; }
+.intro-tour-panel-menu { bottom: max(12px, env(safe-area-inset-bottom)); }
+@media (min-width: 900px) {
+  .intro-tour-panel.intro-tour-panel-menu { left: 28px; right: auto; transform: none; }
+}
+@media (max-width: 480px) {
+  .app-action-menu { border-radius: 17px; }
+  .app-menu-action { min-height: 58px; }
+  .app-menu-action-text strong { font-size: .88rem; }
+  .app-menu-action-text small { font-size: .73rem; }
+  .app-action-menu-tour { max-height: 49dvh; }
+  .intro-tour-panel-menu { max-height: 43dvh; }
+}
