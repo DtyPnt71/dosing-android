@@ -19,7 +19,7 @@ Eine Repository-Dateiseite wie `github.com/DtyPnt71/dosing-android/blob/main/pub
 
 ## Sichtbarkeit: bitte vor dem Umstellen prüfen
 
-**Derzeit ist `dosing-android` privat und proprietär lizenziert.** Die Lizenz „Alle Rechte vorbehalten“ verhindert technisch **nicht**, dass andere die Dateien lesen oder kopieren, sobald das Repository öffentlich ist.
+**`dosing-android` ist inzwischen öffentlich einsehbar und proprietär lizenziert.** Die Lizenz „Alle Rechte vorbehalten“ verhindert technisch **nicht**, dass andere die Dateien lesen oder kopieren, sobald das Repository öffentlich ist.
 
 Bei einer Umstellung auf **öffentlich** wird nicht nur die Datenschutzseite sichtbar, sondern auch:
 
