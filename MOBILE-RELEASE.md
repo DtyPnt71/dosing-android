@@ -80,6 +80,12 @@ Solange die vier Secrets fehlen, erstellt der Workflow **nur die Debug-APK**. De
 
 **Wichtig:** Google Play App Signing verwaltet den Signaturschlüssel für Store-Nutzer; unser Upload-Key signiert das hochgeladene AAB. Die jetzige Debug-APK verwendet einen anderen Signaturschlüssel und kann nicht einfach als Release überschrieben werden: vor einer Neuinstallation individuelle Materialien und Berichte sichern. Auch ein manuell installiertes Release-APK ist nicht automatisch mit der Store-Signatur kompatibel.
 
+## Exportkontrolle USA / EU (Google Play)
+
+Die Google-Play-Export-Erklärung ist **keine reine Formalität**. Wir haben den technischen Ausgangsstand und die noch offenen US-EAR-/EU-/BAFA-/Sanktionsprüfungen in [EXPORT-COMPLIANCE.md](EXPORT-COMPLIANCE.md) dokumentiert. **Bis zur abgeschlossenen, belegten Prüfung wird keine verbindliche Exportfreigabe behauptet.**
+
+Im manuellen GitHub-Actions-Build muss für eine **signierte** APK/AAB zusätzlich die Option `export_compliance_confirmed` bewusst aktiviert werden. Test-APKs benötigen diese Auswahl nicht. Auch nach dieser Auswahl bleibt die Erklärung in der Google Play Console eine eigene rechtlich relevante Bestätigung durch den Entwickler.
+
 ## Store-Freigabe – noch offen
 
 - Signierschlüssel lokal erstellen und als GitHub Actions Secrets hinterlegen; keine Schlüssel/Passwörter im Chat oder Repository teilen
