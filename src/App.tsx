@@ -54,7 +54,7 @@ function App() {
   const [customMaterials, setCustomMaterials] = useState<MaterialMap>(readCustomMaterials)
   const [managerMode, setManagerMode] = useState<'add' | 'manage' | null>(null)
   const [exportOpen, setExportOpen] = useState(false)
-  const [infoOpen, setInfoOpen] = useState<'help' | 'calculation' | 'about' | 'imprint' | null>(null)
+  const [infoOpen, setInfoOpen] = useState<'help' | 'calculation' | 'about' | 'imprint' | 'privacy' | null>(null)
   const [weightNoticeOpen, setWeightNoticeOpen] = useState(true)
   const [updateAvailable, setUpdateAvailable] = useState(() => !!window.__HDT_UPDATE_PENDING__)
   const [updatePhase, setUpdatePhase] = useState('')
@@ -253,6 +253,7 @@ function App() {
               <DropdownMenuItem onSelect={() => void checkForUpdate(false)}><RefreshCw className="size-4" />{language === 'de' ? 'Nach Updates suchen' : 'Check for updates'}</DropdownMenuItem>
               <DropdownMenuItem onSelect={() => setInfoOpen('help')}><CircleHelp className="size-4" />{t('help')}</DropdownMenuItem>
               <DropdownMenuItem onSelect={() => setInfoOpen('about')}><Info className="size-4" />{t('about')}</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setInfoOpen('privacy')}><Info className="size-4" />{language === 'de' ? 'Datenschutzerklärung' : 'Privacy policy'}</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -315,7 +316,7 @@ function App() {
       </main>
 
       <footer className="app-footer">
-        <button onClick={() => setInfoOpen('imprint')}>Impressum</button><button onClick={() => setInfoOpen('help')}>{t('help')}</button><button onClick={() => setInfoOpen('about')}>{CURRENT_VERSION}</button><span className={online ? 'is-online' : 'is-offline'}><i />{online ? t('online') : t('offline')}</span>
+        <button onClick={() => setInfoOpen('imprint')}>Impressum</button><button onClick={() => setInfoOpen('privacy')}>Datenschutz</button><button onClick={() => setInfoOpen('help')}>{t('help')}</button><button onClick={() => setInfoOpen('about')}>{CURRENT_VERSION}</button><span className={online ? 'is-online' : 'is-offline'}><i />{online ? t('online') : t('offline')}</span>
       </footer>
 
       <MaterialManager mode={managerMode} customMaterials={customMaterials} t={t} onClose={() => setManagerMode(null)} onSave={saveCustomMaterial} onDelete={deleteCustomMaterial} />
@@ -323,10 +324,12 @@ function App() {
 
       <Dialog open={weightNoticeOpen} onOpenChange={setWeightNoticeOpen}><DialogContent title={language === 'de' ? 'Wichtiger Hinweis' : 'Important notice'} description={language === 'de' ? 'Berechnung ausschließlich nach Gewicht' : 'Calculation based on weight only'}><div className="weight-notice"><div className="weight-notice-icon"><Scale /></div><p>{language === 'de' ? <>Dieses Tool berechnet das Mischungsverhältnis ausschließlich anhand der <strong>gewogenen Mengen</strong> von Komponente A und B. Volumenangaben dürfen nicht verwendet werden.</> : <>This tool calculates the mixing ratio exclusively from the <strong>weighed quantities</strong> of components A and B. Do not use volume measurements.</>}</p><Button className="w-full" onClick={() => setWeightNoticeOpen(false)}>{language === 'de' ? 'Verstanden' : 'Understood'}</Button></div></DialogContent></Dialog>
 
-      <Dialog open={infoOpen != null} onOpenChange={(open) => !open && setInfoOpen(null)}><DialogContent title={infoOpen === 'help' ? t('help') : infoOpen === 'calculation' ? (language === 'de' ? 'Berechnung & Gewicht' : 'Calculation & weight') : infoOpen === 'imprint' ? 'Impressum' : t('about')}>
-        <div className="prose-panel">
+      <Dialog open={infoOpen != null} onOpenChange={(open) => !open && setInfoOpen(null)}><DialogContent title={infoOpen === 'help' ? t('help') : infoOpen === 'calculation' ? (language === 'de' ? 'Berechnung & Gewicht' : 'Calculation & weight') : infoOpen === 'imprint' ? 'Impressum' : infoOpen === 'privacy' ? (language === 'de' ? 'Datenschutzerklärung' : 'Privacy policy') : t('about')}>
+        {infoOpen === 'privacy'
+          ? <iframe title={language === 'de' ? 'Datenschutzerklärung' : 'Privacy policy'} src="./datenschutz.html" className="w-full min-h-[55dvh] border-0 bg-white" />
+          : <div className="prose-panel">
           {infoOpen === 'help' ? <ol><li>{language === 'de' ? 'Materialsorte und Materialtyp auswählen.' : 'Select material family and type.'}</li><li>{language === 'de' ? 'Gewichte von Komponente A und B eingeben.' : 'Enter weights for components A and B.'}</li><li>{language === 'de' ? 'Live-Ergebnis und Toleranz prüfen.' : 'Check live result and tolerance.'}</li><li>{language === 'de' ? 'Probe übernehmen und bis zu fünf Messungen vergleichen.' : 'Add the sample and compare up to five measurements.'}</li></ol> : infoOpen === 'calculation' ? <><div className="calculation-box"><span>B</span><i>÷</i><span>A</span><i>×</i><span>100</span><strong>%</strong></div><p>{t('formula')}</p><p>{language === 'de' ? 'Verwende ausschließlich gewogene Mengen in derselben Einheit. Gramm und Kilogramm dürfen nicht innerhalb einer Berechnung gemischt werden.' : 'Use weighed quantities in the same unit only. Do not mix grams and kilograms within one calculation.'}</p></> : infoOpen === 'imprint' ? <p><strong>HDT Hochdruck-Dosier-Technik GmbH</strong><br />Müllerstraße 7<br />46242 Bottrop<br />Deutschland<br /><br />Telefon: +49 (0) 20 41/10 13 01<br />E-Mail: info@h-d-tec.de</p> : <><p><strong>HDT Dosier-Tool {CURRENT_VERSION}</strong></p><p>Copyright © 2026 Timo Burian.<br />{language === 'de' ? 'Alle Rechte vorbehalten.' : 'All rights reserved.'}</p><p>{language === 'de' ? 'Das HDT-Logo und die HDT-Markenkennzeichen sind Eigentum der HDT Hochdruck-Dosier-Technik GmbH (HDT GmbH) und werden mit deren Genehmigung verwendet.' : 'The HDT logo and HDT brand identifiers are the property of HDT Hochdruck-Dosier-Technik GmbH (HDT GmbH) and are used with permission.'}</p><p className="text-slate-500">{language === 'de' ? 'Verwendete Open-Source-Bibliotheken unterliegen ihren eigenen Lizenzen.' : 'Third-party open-source libraries remain subject to their own licenses.'}<br />Android · React · Capacitor</p></>}
-        </div>
+        </div>}
       </DialogContent></Dialog>
 
       {toast ? <div className="toast" role="status">{toast}</div> : null}
