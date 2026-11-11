@@ -83,23 +83,18 @@ finalen AAB auf Bibliotheken, Netzwerkanfragen und App-Backups prüfen.
 - App-Menü und Footer können den lokal eingebetteten HTML-Text öffnen,
   **ohne Internetverbindung**.
 - Die aktuelle Datei enthält **Entwurfsmarkierung und Platzhalter** für:
-  verantwortliche ladungsfähige Anschrift, Datenschutz-E-Mail und
-  technischen Betreiber der später öffentlich aufrufbaren Seite.
+  datenschutzrechtliche Verantwortlichkeit sowie die Hostinginformationen
+  müssen mit der endgültigen öffentlichen Version abgeglichen werden.
+  Die Kontaktangaben von Timo Burian sind bereits ausgefüllt.
 - **Vor Google Play:** Platzhalter ersetzen, Verantwortlichkeit klären,
   externe SDK-/Netzwerkprüfung abschließen, öffentliche HTTPS-Seite
   aufrufen/testen und Link in Play Console hinterlegen.
 
-**Empfohlenes Hosting:** Separates öffentliches GitHub-Pages-Repository nur
-für die fertige statische HTML-Datenschutzerklärung. Das Android-Repository
-selbst bleibt privat. Keine Third-Party-Analytik, Fonts, externen Skripte
-oder Cookies einsetzen. GitHub Pages protokolliert gemäß eigenem Hinweis
-beim Seitenaufruf die IP-Adresse für Sicherheitszwecke: diesen
-Hosting-Sachverhalt im öffentlichen Datenschutztext korrekt benennen.
-GitHub Pages verlangt eine weltweit erreichbare HTTPS-Webseite, keine
-Markdown-Datei hinter einem privaten Login.
+**Geplantes Hosting aus demselben Repository:** `docs/index.html` ist eine Kopie der in der Android-App enthaltenen Datenschutzerklärung `public/datenschutz.html`. Unter **Settings → Pages → Deploy from a branch → main → /docs** kann GitHub Pages dafür aktiviert werden. Vorgesehene öffentliche URL: https://dtypnt71.github.io/dosing-android/ . Die URL ist **noch nicht als erreichbar bestätigt**; in `mobile-release.json` bleibt `privacyPolicyStatus: draft` bis zum manuellen Abruf und der Rechtsprüfung gesetzt.
 
-Alternativ: eigene, separat gehostete Netlify-Seite; auch deren Hosting-
-Zugriffsprotokolle müssten entsprechend offengelegt werden.
+**Wichtig zur Repository-Sichtbarkeit:** Bei GitHub Free muss für Pages das gesamte Repository öffentlich sein; dadurch können Dritte den kompletten proprietären Quellcode und die Git-Historie einsehen. Mit GitHub Pro kann Pages aus einem privaten Repository verfügbar sein. Vor der Umstellung die Quelltexte, Historie, interne Daten und Firmenkennzeichen prüfen. Die Sichtbarkeit wird nicht automatisch geändert.
+
+Die HTML-Seite verwendet keine Werbe- oder Tracking-Skripte; GitHub Pages kann Zugriffs- und Sicherheitsprotokolle (insbesondere IP-Adressen) führen. Dieser Umstand ist in der HTML-Erklärung berücksichtigt.
 
 ## 5. Quellen
 
