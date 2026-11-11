@@ -29,3 +29,7 @@ Die Webversion unter https://dosing.netlify.app/ bleibt vorerst unverändert. Di
 - PWA-Service-Worker im Android-Container deaktiviert
 - Lokale Benutzermaterialien in der bisherigen Website werden nicht automatisch in die APK übertragen
 - Debug- und Release-Signaturen sind nicht austauschbar; vor einem Debug-zu-Release-Wechsel Daten sichern
+
+## Paketkennung und Datenschutzerklärung
+
+Vor der ersten Veröffentlichung: neue Android-ID `de.hdt.dosing`. Die frühere Test-APK (`de.hdt.dosiertool`) wird von Android als andere Anwendung behandelt und erhält kein In-Place-Update. Die Datenschutzseite ist als offline nutzbare Datei `public/datenschutz.html` sowie als GitHub-Pages-Einstiegsseite `docs/index.html` vorgesehen; öffentliche Freigabe und Endprüfung sind noch offen.
