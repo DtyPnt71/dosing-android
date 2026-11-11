@@ -31,12 +31,21 @@
 | Android-Backup | **Deaktiviert**, ergänzt durch Cloud-/Gerätetransfer-Ausschlussregeln | Benutzerdaten sollen nicht automatisch über Android-Backup übertragen werden |
 
 Die alte Debug-APK (10.11.2026) verlangte `android.permission.INTERNET`
-und hatte `android:allowBackup=true`. **Nicht mit dem neuen, noch zu
-prüfenden Build verwechseln.** Ein neues Privacy-Hardening-Skript
-`scripts/harden_android.py` setzt die geplanten Regeln bei jedem
-Capacitor-Build; `scripts/verify_android_privacy.py` prüft das
-zusammengeführte Manifest. **Auf realen Geräten muss noch bestätigt werden,
-dass App-Start, PDF und E-Mail-Teilen ohne INTERNET-Berechtigung funktionieren.**
+und hatte `android:allowBackup=true`. Der neue Datenschutz-Testbuild
+[GitHub Actions #42970018468](https://github.com/DtyPnt71/dosing-android/actions/runs/42970018468)
+wurde am 11.11.2026 **erfolgreich gebaut**. Der CI-Prüfschritt
+`scripts/verify_android_privacy.py` bestätigte, dass das zusammengeführte
+Manifest **keine** `INTERNET`-, `AD_ID`-, allgemeine Speicher-,
+Standort-, Kamera- oder Mikrofonberechtigungen enthält, Android-Backup
+explizit deaktiviert und Backup-Ausschlussregeln gesetzt sind.
+
+Das APK-Archiv wurde zusätzlich unabhängig auf Berechtigungsstrings und
+die mitgelieferte Datenschutzseite geprüft; SHA-256:
+`a57713e1d35084244d43d7fe8dc052b0cacf88f54a3b1c95f0125e4d2d189d8a`.
+
+**Auf realen Geräten muss noch bestätigt werden, dass App-Start, PDF
+und E-Mail-Teilen ohne INTERNET-Berechtigung funktionieren.** Das
+erfolgreiche CI-Build ist kein Laufzeittest.
 
 ## 3. Datensicherheit – geplante Angaben (vorläufig)
 
