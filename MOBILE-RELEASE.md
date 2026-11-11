@@ -13,9 +13,10 @@
 
 ## Rechte und Kennzeichen
 
-- App-Inhaber und Copyright: **Timo Burian**. Der bestehende About-Dialog enthält bereits `Copyright © 2026 Timo Burian`.
-- Aktueller App-Name: **HDT Dosier-Tool**; Paket-ID `de.hdt.dosiertool`.
-- Vor öffentlicher Veröffentlichung Nutzungsrechte an HDT-Marke, Firmenlogo und Firmenimpressum klären, weil eine private Copyright-Angabe nicht automatisch Nutzungsrechte an Firmenkennzeichen begründet. Name und Paket-ID vor erstem Store-Upload verbindlich festlegen.
+- **Rechteinhaber der eigenen Android-App:** Timo Burian. An eigenständig entwickeltem App-Code und eigenen Projektdateien gelten, soweit Rechte Dritter nicht entgegenstehen, **alle Rechte vorbehalten**. Siehe [LICENSE](LICENSE).
+- **HDT-Logo und HDT-Markenkennzeichen:** Eigentum der **HDT Hochdruck-Dosier-Technik GmbH (HDT GmbH)**. Timo Burian hat die Nutzung nach eigener Angabe genehmigt bekommen. Diese Verwendung begründet keine Übertragung der Logo- oder Markenrechte. Diese Zuordnung steht auch im **Über-Dialog** der App.
+- **Bibliotheken und Assets Dritter:** Rechte verbleiben bei den jeweiligen Inhabern; eigene Lizenzen und Hinweise beachten, siehe [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+- **Vor der Store-Freigabe:** Zustimmung zur Nutzung von HDT-Name/Logo nach Möglichkeit schriftlich dokumentieren, falls Google Play einen Berechtigungsnachweis verlangt. App-Name und Paket-ID `de.hdt.dosiertool` verbindlich festlegen.
 - **Bestehende Website unverändert lassen:** Alle bisherigen Änderungen befinden sich im separaten Branch `main`. Kein Merge nach `main` ohne gesonderte Entscheidung.
 - Bei der aktuellen React-/Capacitor-Struktur ist später eine bewusste Aufteilung von Web- und App-Quellcode sinnvoll. Das darf aber weder die vorhandene Website noch den PDF-Versand verändern.
 
@@ -81,7 +82,7 @@ Solange die vier Secrets fehlen, erstellt der Workflow **nur die Debug-APK**. De
 ## Store-Freigabe – noch offen
 
 - Signierschlüssel lokal erstellen und als GitHub Actions Secrets hinterlegen; keine Schlüssel/Passwörter im Chat oder Repository teilen
-- Marken-/Logorechte HDT, gewünschte Entwickleridentität und endgültige Paket-ID klären
+- Nutzungserlaubnis für HDT-Logo/-Name für etwaige Play-Store-Rückfragen schriftlich dokumentieren; gewünschte Entwickleridentität und endgültige Paket-ID prüfen
 - Datenschutzerklärung, Datenverarbeitungsangaben, Store-Grafiken/Beschreibung vorbereiten
 - Release-Build, Offline-Betrieb, Datenpersistenz und PDF-Teilen auf echten Android-Geräten testen
 - Aktuelle Google-Play-Richtlinien (inklusive Target API) prüfen
