@@ -1,11 +1,7 @@
 name: HDT Dosier-Tool Android
 
 # Manual builds avoid generating artifacts on every source change.
-# PDF chart branch: one final validation build after print-layout adjustments.
 on:
-  push:
-    branches: [feature/pdf-sample-chart]
-    paths: ['.github/workflows/android-apk.yml']
   workflow_dispatch:
     inputs:
       export_compliance_confirmed:
