@@ -15,11 +15,11 @@ export function renderReportChartImage(
   const { low, high, target, band, bottom, top, ticks } = getChartScale(samples, material)
   const scale = 2
   const width = 600
-  const height = 294
+  const height = 193
   const left = 57
   const right = width - 18
-  const plotTop = 38
-  const plotBottom = 247
+  const plotTop = 25
+  const plotBottom = 138
   const canvas = document.createElement('canvas')
   canvas.width = width * scale
   canvas.height = height * scale
@@ -129,7 +129,7 @@ export function renderReportChartImage(
     ctx.font = '12px Arial, sans-serif'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillText(`${language === 'de' ? 'Probe' : 'Sample'} ${i + 1}`, px, 276)
+    ctx.fillText(`${language === 'de' ? 'Probe' : 'Sample'} ${i + 1}`, px, 176)
   }
 
   return canvas.toDataURL('image/png')
