@@ -70,7 +70,7 @@ export function ExportDialog({ open, onOpenChange, language, family, material, s
       low !== null || high !== null ? `<span style="white-space:nowrap"><i style="display:inline-block;width:9px;height:9px;background:#b45309;transform:rotate(45deg);vertical-align:middle;margin:0 8px 0 4px"></i>${de ? 'Außerhalb der Vorgabe' : 'Outside specification'}</span>` : '',
     ].filter(Boolean).join('')
     const chartMarkup = chartImage ? `
-      <div style="margin-top:18px;border:1px solid #dbe3e8;border-radius:9px;padding:12px 12px 10px;page-break-inside:avoid;break-inside:avoid">
+      <div style="margin-top:13px;border:1px solid #dbe3e8;border-radius:9px;padding:9px 12px 8px;page-break-inside:avoid;break-inside:avoid">
         <div style="font-size:14px;font-weight:700;color:#17202a;margin:0 0 3px">${de ? 'Probenverlauf' : 'Sample trend'}</div>
         <div style="font-size:10px;color:#526b79;margin-bottom:5px">${de ? 'Dosierung · B bezogen auf A in %' : 'Dosing · B relative to A in %'}</div>
         <img src="${chartImage}" alt="${de ? 'Diagramm der Messreihe' : 'Measurement series chart'}" style="display:block;width:100%;height:auto" />
@@ -95,7 +95,7 @@ export function ExportDialog({ open, onOpenChange, language, family, material, s
       ${chartMarkup}
       ${form.batchEnabled ? `<div style="margin-top:20px"><strong>Material-Charge</strong><p>A: ${escape(form.batchA || '–')}<br/>B: ${escape(form.batchB || '–')}</p></div>` : ''}
       ${form.comment ? `<div style="margin-top:20px"><strong>Kommentar</strong><p style="white-space:pre-wrap">${escape(form.comment)}</p></div>` : ''}
-      <div style="margin-top:28px;padding-top:12px;border-top:1px solid #dbe3e8;color:#667784">Erstellt durch: ${escape(creator || '–')} · HDT Hochdruck-Dosier-Technik GmbH</div>`
+      <div style="margin-top:20px;padding-top:10px;border-top:1px solid #dbe3e8;color:#667784">Erstellt durch: ${escape(creator || '–')} · HDT Hochdruck-Dosier-Technik GmbH</div>`
     document.body.appendChild(node)
     return node
   }
