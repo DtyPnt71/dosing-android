@@ -2,9 +2,9 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { ChevronDown, ChartNoAxesCombined } from 'lucide-react'
 import type { Language, Material, Sample } from '../lib/types'
 import { formatPercent } from '../lib/utils'
+import { getChartScale, outsideSpecification, validChartValue } from '../lib/chartScale'
 
 type Props = { samples: Sample[]; material: Material | null; language: Language }
-const valid = (n: number | null | undefined): n is number => typeof n === 'number' && Number.isFinite(n) && n >= 0
 
 export function SampleChart({ samples, material, language }: Props) {
   const [visible, setVisible] = useState(false)
@@ -20,26 +20,11 @@ export function SampleChart({ samples, material, language }: Props) {
     observer.observe(frame.current)
     return () => observer.disconnect()
   }, [visible])
-  const low = valid(material?.minPercentB) ? material.minPercentB : null
-  const high = valid(material?.maxPercentB) ? material.maxPercentB : null
-  const target = valid(material?.targetPercentB) ? material.targetPercentB : low != null && low === high ? low : null
-  const band = low != null && high != null && high > low
-  const values = samples.map(s => s.value).filter(valid)
-  const refs = [low, high, target].filter(valid)
-  const extent = [...values, ...refs]
-  const minimum = extent.length ? Math.min(...extent) : 0
-  const maximum = extent.length ? Math.max(...extent) : 1
-  const padding = Math.max((maximum - minimum) * .3, maximum * .015, .1)
-  const rawStep = Math.max(maximum - minimum + padding * 2, .5) / 4
-  const magnitude = 10 ** Math.floor(Math.log10(rawStep))
-  const step = ([1, 2, 2.5, 5, 10].find(n => n * magnitude >= rawStep) ?? 10) * magnitude
-  const bottom = Math.max(0, Math.floor((minimum - padding) / step) * step)
-  const top = Math.max(bottom + 2 * step, Math.ceil((maximum + padding) / step) * step)
-  const ticks = Array.from({ length: Math.round((top - bottom) / step) + 1 }, (_, i) => bottom + i * step)
+  const { low, high, target, band, values, bottom, top, ticks } = getChartScale(samples, material)
   const left = 57, right = width - 18, plotTop = 40, plotBottom = 254
   const x = (i: number) => left + (right - left) * (i + .5) / 5
   const y = (n: number) => plotBottom - (n - bottom) / (top - bottom) * (plotBottom - plotTop)
-  const outside = (n: number) => (low != null && n < low) || (high != null && n > high)
+  const outside = (n: number) => outsideSpecification(n, low, high)
   const tickFormat = new Intl.NumberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2, notation: top >= 10000 ? 'compact' : 'standard' })
   const title = de ? 'Probenverlauf' : 'Sample trend'
 
@@ -64,7 +49,7 @@ export function SampleChart({ samples, material, language }: Props) {
           {Array.from({ length: 5 }, (_, i) => {
             const sample = samples[i]
             return <g key={i}>
-              {sample && valid(sample.value) ? <>
+              {sample && validChartValue(sample.value) ? <>
                 {outside(sample.value) ? <path data-chart-point="true" d={`M ${x(i)} ${y(sample.value) - 7} l 7 7 l -7 7 l -7 -7 Z`} fill="#b45309" stroke="white" strokeWidth="2" /> : <circle data-chart-point="true" cx={x(i)} cy={y(sample.value)} r="6" fill="#087f96" stroke="white" strokeWidth="2" />}
                 <text x={x(i)} y={y(sample.value) - 15} textAnchor="middle" className="chart-value">{fmt(sample.value)}</text>
               </> : <text x={x(i)} y={plotBottom - 12} textAnchor="middle" className="chart-axis">–</text>}
