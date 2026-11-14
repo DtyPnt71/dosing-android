@@ -4,12 +4,14 @@ import type { Language, Material, Sample } from '../lib/types'
 import { formatPercent } from '../lib/utils'
 import { getChartScale, outsideSpecification, validChartValue } from '../lib/chartScale'
 
-type Props = { samples: Sample[]; material: Material | null; language: Language }
+type Props = { samples: Sample[]; material: Material | null; language: Language; tourOpen?: boolean }
 
-export function SampleChart({ samples, material, language }: Props) {
+export function SampleChart({ samples, material, language, tourOpen = false }: Props) {
   const [visible, setVisible] = useState(false)
   const [width, setWidth] = useState(600)
   const frame = useRef<HTMLDivElement>(null)
+  // Reveal the real graph when the guided tour reaches it, even if collapsed.
+  useEffect(() => { if (tourOpen) setVisible(true) }, [tourOpen])
   const id = useId()
   const de = language === 'de'
   const locale = de ? 'de-DE' : 'en-US'
@@ -28,8 +30,8 @@ export function SampleChart({ samples, material, language }: Props) {
   const tickFormat = new Intl.NumberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2, notation: top >= 10000 ? 'compact' : 'standard' })
   const title = de ? 'Probenverlauf' : 'Sample trend'
 
-  return <section className="sample-chart-section chart-redesign" data-tour="chart">
-    <button className="chart-disclosure" onClick={() => setVisible(v => !v)} aria-expanded={visible} aria-controls={id}>
+  return <section className="sample-chart-section chart-redesign">
+    <button data-tour="chart" className="chart-disclosure" onClick={() => setVisible(v => !v)} aria-expanded={visible} aria-controls={id}>
       <span className="chart-disclosure-icon"><ChartNoAxesCombined size={22} /></span>
       <span className="chart-disclosure-copy"><strong>{de ? 'Diagramm' : 'Chart'}</strong><small>{visible ? (de ? 'Probenverlauf ausblenden' : 'Hide sample trend') : (de ? 'Probenverlauf anzeigen' : 'Show sample trend')}</small></span>
       <ChevronDown size={22} className={visible ? 'chart-chevron-open' : ''} />
