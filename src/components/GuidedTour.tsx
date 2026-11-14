@@ -66,8 +66,6 @@ type TourProps = {
   onSkip: () => void
 }
 
-type Highlight = { top: number; left: number; width: number; height: number }
-
 export function LanguageWelcome({
   open, onSelect,
 }: {
