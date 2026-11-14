@@ -4,7 +4,7 @@ name: HDT Dosier-Tool Android
 on:
   push:
     branches: [feature/pdf-sample-chart]
-    paths: ['.github/workflows/android-apk.yml']
+    paths: ['src/**', '.github/workflows/android-apk.yml']
   workflow_dispatch:
     inputs:
       export_compliance_confirmed:
