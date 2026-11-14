@@ -208,6 +208,15 @@ export function GuidedTour({ language, stepIndex, menuVisible, onBack, onNext, o
       window.addEventListener('resize', updatePosition)
       window.visualViewport?.addEventListener('resize', updatePosition)
       window.visualViewport?.addEventListener('scroll', updatePosition)
+      // On the chart step the first scroll can be clamped by the still-collapsed
+      // page height. Scroll once more after the chart has expanded so the actual
+      // plotted graph comes into view, not just the disclosure header.
+      if (step.id === 'chart') {
+        timeouts.push(window.setTimeout(() => {
+          target?.scrollIntoView({ behavior: reducedMotion() ? 'instant' : 'smooth', block: 'center', inline: 'nearest' })
+          updatePosition()
+        }, 220))
+      }
       timeouts.push(window.setTimeout(updatePosition, 120))
       timeouts.push(window.setTimeout(updatePosition, 360))
       timeouts.push(window.setTimeout(updatePosition, 650))
