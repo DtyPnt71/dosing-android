@@ -72,6 +72,7 @@ export function AppMenu({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
+        collisionPadding={12}
         className={`app-action-menu${tourActive ? ' app-action-menu-tour' : ''}`}
         data-tour="menu"
         onCloseAutoFocus={tourActive ? (event) => event.preventDefault() : undefined}
