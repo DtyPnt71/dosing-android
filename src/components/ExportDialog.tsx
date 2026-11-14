@@ -161,19 +161,19 @@ export function ExportDialog({ open, onOpenChange, language, family, material, s
 
   return (
     <Dialog open={open} onOpenChange={close}>
-      <DialogContent title={t('exportTitle')} description={material?.name ?? ''}>
+      <DialogContent className="export-dialog" title={t('exportTitle')} description={material?.name ?? ''} preventAutoFocus>
         {!unlocked ? (
-          <div className="p-5 sm:p-6">
+          <div className="export-dialog-scroll p-5 sm:p-6">
             <div className="mb-5 flex items-center gap-3 rounded-2xl border border-cyan-200 bg-cyan-50 p-4 text-sm text-slate-700"><ShieldCheck className="size-5 shrink-0 text-cyan-700" />Interne Berichtsfunktion</div>
-            <label className="form-field"><span>{t('exportPin')}</span><input type="password" inputMode="numeric" value={pin} onChange={(e) => { setPin(e.target.value.replace(/\D/g, '')); setPinError(false) }} onKeyDown={(e) => e.key === 'Enter' && unlock()} autoFocus /></label>
+            <label className="form-field"><span>{t('exportPin')}</span><input type="password" inputMode="numeric" value={pin} onChange={(e) => { setPin(e.target.value.replace(/\D/g, '')); setPinError(false) }} onKeyDown={(e) => e.key === 'Enter' && unlock()} /></label>
             {pinError ? <p className="mt-2 text-sm text-red-700">{t('wrongPin')}</p> : null}
             <Button className="mt-5 w-full" onClick={unlock}>{t('continue')}</Button>
           </div>
         ) : (
           <>
-            <div className="min-h-0 flex-1 overflow-y-auto p-5 sm:p-6">
+            <div className="export-dialog-scroll min-h-0 flex-1 overflow-y-auto p-5 sm:p-6">
               <div className="form-grid">
-                <label className="form-field"><span>{t('machine')}</span><input value={form.machine} onChange={(e) => setForm({ ...form, machine: e.target.value })} autoFocus /></label>
+                <label className="form-field"><span>{t('machine')}</span><input value={form.machine} onChange={(e) => setForm({ ...form, machine: e.target.value })} /></label>
                 <label className="form-field"><span>{t('date')}</span><input value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} /></label>
                 <label className="form-field"><span>{t('customer')}</span><input value={form.customer} onChange={(e) => setForm({ ...form, customer: e.target.value })} /></label>
                 <label className="form-field"><span>{t('creator')}</span><select value={form.creator} onChange={(e) => setForm({ ...form, creator: e.target.value })}><option value="">Bitte wählen</option>{creators.map((name) => <option key={name} value={name}>{name}</option>)}<option value="__other__">Andere …</option></select></label>
@@ -183,7 +183,7 @@ export function ExportDialog({ open, onOpenChange, language, family, material, s
                 {form.batchEnabled ? <><label className="form-field"><span>{t('batchA')}</span><input value={form.batchA} onChange={(e) => setForm({ ...form, batchA: e.target.value })} /></label><label className="form-field"><span>{t('batchB')}</span><input value={form.batchB} onChange={(e) => setForm({ ...form, batchB: e.target.value })} /></label></> : null}
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3 border-t border-slate-200 p-4 sm:px-6"><Button variant="secondary" onClick={sendEmail}><Mail className="size-4" />{t('email')}</Button><Button disabled={busy} onClick={createPdf}><FileDown className="size-4" />{busy ? '…' : t('createPdf')}</Button></div>
+            <div className="export-dialog-actions grid shrink-0 grid-cols-2 gap-3 border-t border-slate-200 p-4 sm:px-6"><Button variant="secondary" onClick={sendEmail}><Mail className="size-4" />{t('email')}</Button><Button disabled={busy} onClick={createPdf}><FileDown className="size-4" />{busy ? '…' : t('createPdf')}</Button></div>
           </>
         )}
       </DialogContent>
