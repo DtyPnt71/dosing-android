@@ -2,6 +2,9 @@ name: HDT Dosier-Tool Android
 
 # Manual builds avoid generating artifacts on every source change.
 on:
+  push:
+    branches: [feature/pdf-sample-chart]
+    paths: ['.github/workflows/android-apk.yml']
   workflow_dispatch:
     inputs:
       export_compliance_confirmed:
@@ -101,6 +104,7 @@ jobs:
           retention-days: 2
 
       - name: Build signed release AAB and APK when signing secrets are configured
+        if: github.event_name == 'workflow_dispatch'
         id: release
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
