@@ -362,7 +362,7 @@ function App() {
           ) : <div className="empty-series"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><p>{t('emptyHistory')}</p></div>}
           <div className="mean-panel"><div><span>{t('mean')}</span><strong>{formatPercent(mean, locale)}{mean == null ? '' : ' %'}</strong></div><StatusBadge status={meanStatus} label={mean == null ? (language === 'de' ? 'Noch keine Messung' : 'No measurements yet') : statusLabel(meanStatus)} /></div>
         </section>
-        <SampleChart key={`${family}:${materialId}`} samples={samples} material={selectedMaterial} language={language} />
+        <SampleChart key={`${family}:${materialId}`} samples={samples} material={selectedMaterial} language={language} tourOpen={tourStep === ONBOARDING_STEPS - 2 && !chooseLanguageOpen} />
       </main>
 
       <footer className="app-footer">

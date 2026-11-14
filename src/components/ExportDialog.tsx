@@ -6,6 +6,8 @@ import { FileDown, Mail, ShieldCheck } from 'lucide-react'
 import { Dialog, DialogContent } from './ui/dialog'
 import { Button } from './ui/button'
 import { formatPercent, formatToday } from '../lib/utils'
+import { getChartScale } from '../lib/chartScale'
+import { renderReportChartImage } from '../lib/reportChart'
 import type { Family, Language, Material, Sample } from '../lib/types'
 import type { MessageKey } from '../lib/i18n'
 
@@ -57,6 +59,27 @@ export function ExportDialog({ open, onOpenChange, language, family, material, s
     node.style.cssText = 'width:190mm;min-height:270mm;padding:14mm;background:#fff;color:#17202a;font-family:Arial,sans-serif;font-size:12px;box-sizing:border-box;'
     const rows = samples.map((sample, index) => `<tr><td style="padding:8px;border-bottom:1px solid #dbe3e8">${index + 1}</td><td style="padding:8px;border-bottom:1px solid #dbe3e8;text-align:right;font-weight:700">${formatPercent(sample.value, locale)} %</td></tr>`).join('')
     const escape = (value: string) => value.replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]!)
+
+    // The report includes a chart even when the optional home chart is collapsed.
+    const { low, high, target, band, bottom, top } = getChartScale(samples, material)
+    const chartImage = samples.length ? renderReportChartImage(samples, material, language) : ''
+    const de = language === 'de'
+    const chartLegend = [
+      target !== null ? `<span style="white-space:nowrap"><i style="display:inline-block;width:17px;border-top:2px dashed #315b96;vertical-align:middle;margin-right:5px"></i>${de ? 'Sollwert' : 'Target'}: ${formatPercent(target, locale)} %</span>` : '',
+      band ? `<span style="white-space:nowrap"><i style="display:inline-block;width:17px;height:10px;background:#e7f5ef;border:1px dashed #16805d;vertical-align:middle;margin-right:5px"></i>${de ? 'Toleranz' : 'Tolerance'}: ${formatPercent(low, locale)}–${formatPercent(high, locale)} %</span>` : '',
+      low !== null || high !== null ? `<span style="white-space:nowrap"><i style="display:inline-block;width:9px;height:9px;background:#b45309;transform:rotate(45deg);vertical-align:middle;margin:0 8px 0 4px"></i>${de ? 'Außerhalb der Vorgabe' : 'Outside specification'}</span>` : '',
+    ].filter(Boolean).join('')
+    const chartMarkup = chartImage ? `
+      <div style="margin-top:13px;border:1px solid #dbe3e8;border-radius:9px;padding:9px 12px 8px;page-break-inside:avoid;break-inside:avoid">
+        <div style="font-size:14px;font-weight:700;color:#17202a;margin:0 0 3px">${de ? 'Probenverlauf' : 'Sample trend'}</div>
+        <div style="font-size:10px;color:#526b79;margin-bottom:5px">${de ? 'Dosierung · B bezogen auf A in %' : 'Dosing · B relative to A in %'}</div>
+        <img src="${chartImage}" alt="${de ? 'Diagramm der Messreihe' : 'Measurement series chart'}" style="display:block;width:100%;height:auto" />
+        <div style="font-size:10px;color:#526b79;line-height:1.45;margin-top:1px">${de ? 'Detailansicht' : 'Detail view'} · ${formatPercent(bottom, locale)}–${formatPercent(top, locale)} % · ${de ? 'Achse automatisch an Messwerte und Vorgabe angepasst.' : 'Axis automatically fitted to measurements and specification.'}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:7px 17px;border-top:1px solid #e2e8f0;padding-top:8px;margin-top:8px;color:#334155;font-size:10px;line-height:1.4">
+          ${chartLegend || (de ? 'Keine Vorgabe hinterlegt.' : 'No specification provided.')}
+        </div>
+      </div>` : ''
+
     node.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #19a9bd;padding-bottom:12px;margin-bottom:20px">
         <img src="${new URL('./logo.png', window.location.href).href}" style="width:150px;height:auto" />
@@ -69,9 +92,10 @@ export function ExportDialog({ open, onOpenChange, language, family, material, s
       </tbody></table>
       <table style="width:100%;border-collapse:collapse;margin-bottom:22px"><thead><tr style="background:#eef5f7"><th style="padding:9px;text-align:left">Probe</th><th style="padding:9px;text-align:right">Ergebnis</th></tr></thead><tbody>${rows}</tbody></table>
       <div style="display:flex;justify-content:space-between;background:#e9f8fa;border:1px solid #a9e2e8;padding:14px 16px;border-radius:10px;font-size:16px"><strong>Mittelwert</strong><strong>${formatPercent(mean, locale)} %</strong></div>
+      ${chartMarkup}
       ${form.batchEnabled ? `<div style="margin-top:20px"><strong>Material-Charge</strong><p>A: ${escape(form.batchA || '–')}<br/>B: ${escape(form.batchB || '–')}</p></div>` : ''}
       ${form.comment ? `<div style="margin-top:20px"><strong>Kommentar</strong><p style="white-space:pre-wrap">${escape(form.comment)}</p></div>` : ''}
-      <div style="margin-top:28px;padding-top:12px;border-top:1px solid #dbe3e8;color:#667784">Erstellt durch: ${escape(creator || '–')} · HDT Hochdruck-Dosier-Technik GmbH</div>`
+      <div style="margin-top:20px;padding-top:10px;border-top:1px solid #dbe3e8;color:#667784">Erstellt durch: ${escape(creator || '–')} · HDT Hochdruck-Dosier-Technik GmbH</div>`
     document.body.appendChild(node)
     return node
   }
@@ -79,11 +103,12 @@ export function ExportDialog({ open, onOpenChange, language, family, material, s
   const createPdf = async () => {
     if (!window.html2pdf) return
     setBusy(true)
-    const node = buildReportNode()
+    let node: HTMLDivElement | null = null
     try {
+      node = buildReportNode()
       await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))
       await Promise.all(Array.from(node.querySelectorAll('img')).map((image) => image.complete ? Promise.resolve() : new Promise<void>((resolve) => { image.onload = () => resolve(); image.onerror = () => resolve() })))
-      const worker = window.html2pdf().from(node).set({ margin: [8, 8, 10, 8], image: { type: 'png', quality: 1 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).toPdf()
+      const worker = window.html2pdf().from(node).set({ margin: [8, 8, 10, 8], image: { type: 'png', quality: 1 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' }, pagebreak: { mode: ['css', 'legacy'] }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).toPdf()
       const blob: Blob = await worker.outputPdf('blob')
       const safeMachine = (form.machine || 'Bericht').replace(/[^a-zA-Z0-9_-]+/g, '_').slice(0, 70) || 'Bericht'
       const fileName = `Mischungsverhaeltnis_${safeMachine}.pdf`
@@ -116,7 +141,7 @@ export function ExportDialog({ open, onOpenChange, language, family, material, s
         : 'PDF could not be created or shared. Please try again.')
       console.error('Dosierbericht PDF:', error)
     } finally {
-      node.remove()
+      node?.remove()
       setBusy(false)
     }
   }
@@ -136,19 +161,19 @@ export function ExportDialog({ open, onOpenChange, language, family, material, s
 
   return (
     <Dialog open={open} onOpenChange={close}>
-      <DialogContent title={t('exportTitle')} description={material?.name ?? ''}>
+      <DialogContent className="export-dialog" title={t('exportTitle')} description={material?.name ?? ''} preventAutoFocus>
         {!unlocked ? (
-          <div className="p-5 sm:p-6">
+          <div className="export-dialog-scroll p-5 sm:p-6">
             <div className="mb-5 flex items-center gap-3 rounded-2xl border border-cyan-200 bg-cyan-50 p-4 text-sm text-slate-700"><ShieldCheck className="size-5 shrink-0 text-cyan-700" />Interne Berichtsfunktion</div>
-            <label className="form-field"><span>{t('exportPin')}</span><input type="password" inputMode="numeric" value={pin} onChange={(e) => { setPin(e.target.value.replace(/\D/g, '')); setPinError(false) }} onKeyDown={(e) => e.key === 'Enter' && unlock()} autoFocus /></label>
+            <label className="form-field"><span>{t('exportPin')}</span><input type="password" inputMode="numeric" value={pin} onChange={(e) => { setPin(e.target.value.replace(/\D/g, '')); setPinError(false) }} onKeyDown={(e) => e.key === 'Enter' && unlock()} /></label>
             {pinError ? <p className="mt-2 text-sm text-red-700">{t('wrongPin')}</p> : null}
             <Button className="mt-5 w-full" onClick={unlock}>{t('continue')}</Button>
           </div>
         ) : (
           <>
-            <div className="min-h-0 flex-1 overflow-y-auto p-5 sm:p-6">
+            <div className="export-dialog-scroll min-h-0 flex-1 overflow-y-auto p-5 sm:p-6">
               <div className="form-grid">
-                <label className="form-field"><span>{t('machine')}</span><input value={form.machine} onChange={(e) => setForm({ ...form, machine: e.target.value })} autoFocus /></label>
+                <label className="form-field"><span>{t('machine')}</span><input value={form.machine} onChange={(e) => setForm({ ...form, machine: e.target.value })} /></label>
                 <label className="form-field"><span>{t('date')}</span><input value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} /></label>
                 <label className="form-field"><span>{t('customer')}</span><input value={form.customer} onChange={(e) => setForm({ ...form, customer: e.target.value })} /></label>
                 <label className="form-field"><span>{t('creator')}</span><select value={form.creator} onChange={(e) => setForm({ ...form, creator: e.target.value })}><option value="">Bitte wählen</option>{creators.map((name) => <option key={name} value={name}>{name}</option>)}<option value="__other__">Andere …</option></select></label>
@@ -158,7 +183,7 @@ export function ExportDialog({ open, onOpenChange, language, family, material, s
                 {form.batchEnabled ? <><label className="form-field"><span>{t('batchA')}</span><input value={form.batchA} onChange={(e) => setForm({ ...form, batchA: e.target.value })} /></label><label className="form-field"><span>{t('batchB')}</span><input value={form.batchB} onChange={(e) => setForm({ ...form, batchB: e.target.value })} /></label></> : null}
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3 border-t border-slate-200 p-4 sm:px-6"><Button variant="secondary" onClick={sendEmail}><Mail className="size-4" />{t('email')}</Button><Button disabled={busy} onClick={createPdf}><FileDown className="size-4" />{busy ? '…' : t('createPdf')}</Button></div>
+            <div className="export-dialog-actions grid shrink-0 grid-cols-2 gap-3 border-t border-slate-200 p-4 sm:px-6"><Button variant="secondary" onClick={sendEmail}><Mail className="size-4" />{t('email')}</Button><Button disabled={busy} onClick={createPdf}><FileDown className="size-4" />{busy ? '…' : t('createPdf')}</Button></div>
           </>
         )}
       </DialogContent>

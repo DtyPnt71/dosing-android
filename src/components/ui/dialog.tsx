@@ -28,10 +28,10 @@ export function DialogContent({
           className,
         )}
       >
-        <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-slate-300 sm:hidden" />
-        <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-4 sm:px-6">
+        <div className="dialog-handle mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-slate-300 sm:hidden" />
+        <div className="dialog-header flex w-full shrink-0 items-start justify-between gap-4 border-b border-slate-200 px-5 py-4 sm:px-6">
           <div>
-            <DialogPrimitive.Title className="text-lg font-bold text-slate-900">{title}</DialogPrimitive.Title>
+            <DialogPrimitive.Title className="min-w-0 break-words text-lg font-bold text-slate-900">{title}</DialogPrimitive.Title>
             {description ? (
               <DialogPrimitive.Description className="mt-1 text-sm leading-5 text-slate-600">
                 {description}
