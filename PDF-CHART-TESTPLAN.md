@@ -55,3 +55,34 @@ Anpassung auf dem Branch:
 - [ ] Tablet: vorheriges Aussehen und PDF-Bericht weiterhin unverändert nutzbar
 
 Hinweis: GitHub-CI validiert TypeScript, Android-APK und Berechtigungen, nicht die visuelle Wirkung auf dem Emulator. Nutzerseitiger Screenshot-Test ist noch offen.
+
+
+## Side-Drawer & adaptive Einführung (14.11.2026)
+
+- Altes Popup-Menü durch einen über die gesamte Bildschirmhöhe scrollbaren **seitlichen Drawer** ersetzt, ohne doppeltes Branding, mit dunkler und weichgezeichneter Hintergrundüberlagerung.
+- Kontext-Tour mit sechs Schritten: beweglicher Spotlight-Rahmen, animierter Fortschrittsindikator, dynamisch oberhalb/unterhalb/neben dem Ziel platzierte Hinweiskarten.
+- Diagrammschritt öffnet das Diagramm automatisch und scrollt erneut nach der Erweiterung; beim Menüschritt wird die Seitenleiste fest eingeblendet und der Hintergrund nach oben gescrollt.
+- Kleine Displays werden zusätzlich neu positioniert, falls das Tooltip sonst sein Ziel überdecken würde. Nutzer mit reduzierten Animationen erhalten weitgehend statische Übergänge.
+
+### Durchgeführt: automatisierter Browser-Sichttest
+
+Die aus der **fertig gebauten Android-Debug-APK** entnommenen Web-Assets wurden lokal in Headless-Chromium mit simuliertem LocalStorage getestet. Ergebnisse:
+
+- [x] Alle sechs Tour-Schritte bei **390 × 844** geprüft
+- [x] Alle sechs Tour-Schritte bei **320 × 640** geprüft
+- [x] Gemessene Überschneidungsfläche zwischen Tooltip und Spotlight: **0 px²** in sämtlichen zwölf Schritten
+- [x] Diagramm im Schritt 5 automatisch aufgeklappt und mit SVG-Plot im sichtbaren Bereich
+- [x] Menü in Schritt 6 trotz vorherigem Scrollen sichtbar; Hintergrund kehrt an Seitenanfang zurück
+- [x] Manuelle Menüöffnung nach der Tour, Scrollbarkeit und sämtliche Optionen vorhanden
+- [x] Keine Javascript-Laufzeitfehler in den geprüften Screens
+- [x] TypeScript-/Vite-Build, Android-Debug-APK und Datenschutz-Manifestprüfung: [GitHub Actions #43593106276](https://github.com/DtyPnt71/dosing-android/actions/runs/43593106276)
+
+### Noch auf dem Android-Emulator manuell kontrollieren
+
+- [ ] Drawer öffnen/schließen per Menüschaltfläche, X, Tap außerhalb, Zurücktaste
+- [ ] Drawer-Scrollen und Dialoge aus Material-/Info-Menü öffnen
+- [ ] GuidedTour auf Android 37, Schwerpunkt Diagramm und Menü
+- [ ] Nach Eingabe einer Messreihe PDF erzeugen, teilen/speichern
+- [ ] Spracheinstellung auf Englisch und erneuter Tourstart
+
+Der Headless-Chromium-Test ist keine vollständige native Android-WebView-/Touch-/Tastaturprüfung. Zum Veröffentlichen daher einen Android-Emulatortest durchführen.
