@@ -1,0 +1,59 @@
+name: Verify Android upload key (no release)
+
+# One-time check on a dedicated branch. Never signs an AAB or publishes an app.
+on:
+  push:
+    branches: [chore/verify-upload-key]
+    paths: ['.github/workflows/verify-upload-key.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Validate protected signing secrets
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Set up Java keytool
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Validate secrets and upload certificate privately
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::Signing secret ${name} is missing or empty."
+              exit 1
+            fi
+          done
+          if [ "$ANDROID_KEYSTORE_PASSWORD" != "$ANDROID_KEY_PASSWORD" ]; then
+            echo "::error::The key password differs from the keystore password. Verify the two entries for this PKCS12 key."
+            exit 1
+          fi
+          KEYFILE="$(mktemp "${RUNNER_TEMP}/hdt-signing-XXXXXXXX.p12")"
+          chmod 600 "$KEYFILE"
+          trap 'rm -f "$KEYFILE"' EXIT
+          if ! printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$KEYFILE"; then
+            echo "::error::ANDROID_KEYSTORE_BASE64 is not valid Base64."
+            exit 1
+          fi
+          if [ ! -s "$KEYFILE" ]; then
+            echo "::error::Decoded keystore is empty."
+            exit 1
+          fi
+          if ! keytool -list -storetype PKCS12 -keystore "$KEYFILE" -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$ANDROID_KEY_ALIAS" >/dev/null 2>&1; then
+            echo "::error::Could not open the PKCS12 keystore with the supplied password and alias."
+            exit 1
+          fi
+          echo "Upload certificate and all four GitHub Secrets passed validation."
+          echo "No release artifact was generated and no secret values were logged."
