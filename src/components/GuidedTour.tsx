@@ -180,6 +180,38 @@ export function GuidedTour({ language, stepIndex, menuVisible, onBack, onNext, o
       setPlacement({ top, left, width: cardWidth, side })
     }
 
+    const makeRoomForCoachmark = () => {
+      if (!target || cancelled || step.id === 'menu') return
+      const view = viewport()
+      const rect = target.getBoundingClientRect()
+      const cardHeight = panel.current?.getBoundingClientRect().height || 235
+      const reserved = cardHeight + 26
+      const freeAbove = rect.top - view.top
+      const freeBelow = view.top + view.height - rect.bottom
+      if (freeAbove >= reserved || freeBelow >= reserved) return
+
+      // On compact devices the centered feature and the note may not fit at
+      // once. Shift the underlying page until there is room on one side,
+      // rather than letting the note cover the highlighted controls.
+      const current = window.scrollY
+      const maxScroll = Math.max(0, document.documentElement.scrollHeight - view.height)
+      const clampScroll = (value: number) => Math.max(0, Math.min(maxScroll, value))
+      const scrollForAbove = clampScroll(current + rect.top - (view.top + reserved))
+      const scrollForBelow = clampScroll(current + rect.bottom - (view.top + view.height - reserved))
+      const aboveFits = rect.top - (scrollForAbove - current) >= view.top + reserved - 2
+      const belowFits = rect.bottom - (scrollForBelow - current) <= view.top + view.height - reserved + 2
+
+      let next = current
+      if (step.id === 'chart' && aboveFits) next = scrollForAbove
+      else if (belowFits && (!aboveFits || Math.abs(scrollForBelow - current) <= Math.abs(scrollForAbove - current))) next = scrollForBelow
+      else if (aboveFits) next = scrollForAbove
+      else next = freeAbove > freeBelow ? scrollForAbove : scrollForBelow
+
+      if (Math.abs(next - current) > 4) {
+        window.scrollTo({ top: next, behavior: reducedMotion() ? 'instant' : 'smooth' })
+      }
+    }
+
     const locate = (attempt = 0) => {
       if (cancelled) return
       target = document.querySelector<HTMLElement>('[data-tour="' + step.id + '"]')
@@ -219,7 +251,8 @@ export function GuidedTour({ language, stepIndex, menuVisible, onBack, onNext, o
       }
       timeouts.push(window.setTimeout(updatePosition, 120))
       timeouts.push(window.setTimeout(updatePosition, 360))
-      timeouts.push(window.setTimeout(updatePosition, 650))
+      timeouts.push(window.setTimeout(makeRoomForCoachmark, 500))
+      timeouts.push(window.setTimeout(updatePosition, 950))
     }
     setPlacement(null)
     locate()
