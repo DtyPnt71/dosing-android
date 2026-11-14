@@ -35,3 +35,23 @@
 PS · Kömmerling GD116 · Vorgabe 9,50–11,00 % · Proben: 9,60 / 10,10 / 9,80 / 11,40 / 10,50 % · Mittelwert 10,28 % · Maschine HDT-TEST · Kunde Demokunde
 
 Die demo-PDF enthält synthetische Werte und darf **nicht** als Produktionsmessprotokoll verwendet werden.
+
+## Android-Smartphone-Layout (14.11.2026)
+
+Beobachtung auf einem Android-37-Emulator (schmaler Bildschirm): Das Einstellungsmenü wirkte zu hoch; beim Öffnen des PDF-Berichts war nur die Kopfzeile des Dialogs sichtbar. Tablet-Darstellung war in Ordnung.
+
+Anpassung auf dem Branch:
+- Unter 640 px: Begrenzung der Menühöhe auf tatsächlich freien Platz, Scrollbarkeit und kompaktere Abstände
+- PDF-Erfassungsdialog als nahezu vollhohes mobiles Sheet, festes Kopf-/Fußteil, im Inneren scrollbare Felder
+- Kein automatisches Öffnen der Android-Bildschirmtastatur beim Dialogstart
+- Größere Ansichten (Tablet/Desktop) nicht verändert; keine Änderung der PDF-Diagrammberechnung
+
+### Manuell im Emulator nachprüfen
+- [ ] Medium Phone API 37: Menü öffnen, bis unten zu Datenschutz/Hilfe scrollen, alle Einträge antippbar
+- [ ] PDF-Bericht öffnen: PIN-Feld und Weiter-Button ohne Scroll-Trick sichtbar
+- [ ] Nach PIN-Eingabe: alle Formularfelder scrollen, PDF/E-Mail-Buttons am unteren Rand sichtbar
+- [ ] Eingabefeld antippen: Tastatur darf nicht die Buttons/Formularfelder dauerhaft verdecken
+- [ ] Dialog schließen und erneut öffnen; keine Werte unbeabsichtigt übernommen
+- [ ] Tablet: vorheriges Aussehen und PDF-Bericht weiterhin unverändert nutzbar
+
+Hinweis: GitHub-CI validiert TypeScript, Android-APK und Berechtigungen, nicht die visuelle Wirkung auf dem Emulator. Nutzerseitiger Screenshot-Test ist noch offen.
